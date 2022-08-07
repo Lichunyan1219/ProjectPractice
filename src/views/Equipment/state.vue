@@ -2,26 +2,7 @@
 <template>
   <div>
     <!-- 头部查询部分 -->
-    <div class="top">
-      <el-card class="box-card">
-        <el-form ref="form" label-width="80px" :inline="true">
-          <el-form-item label="设备编号:">
-            <el-input
-              style="width: 206px"
-              placeholder="请输入"
-              v-model="num"
-            ></el-input>
-          </el-form-item>
-          <Button
-            class="query-btn"
-            icon="el-icon-search"
-            title="查询"
-            color="#5f84ff"
-            @click="query"
-          ></Button>
-        </el-form>
-      </el-card>
-    </div>
+    <StateTop label="设备编号 : " @click="query"></StateTop>
 
     <!-- 主渲染部分 -->
     <div class="main">
@@ -67,8 +48,29 @@
           </template>
         </el-table-column>
       </el-table>
+      <Dialog title="设备详情" :visible.sync="visible">
+        <el-row type="flex" justify="space-around" align="middle">
+          <el-col>销售量：</el-col>
+          <el-col>销售额：</el-col>
+          <el-col>补货次数：{{ supplyNum }}次</el-col>
+          <el-col>维修次数：{{ fixNum }}次</el-col>
+        </el-row>
+        <div class="mid-title">商品销量（月）</div>
+        <el-row>
+          <el-col
+            :span="6"
+            v-for="(item, index) in goodsSalesList"
+            :key="index"
+          >
+            <div class="sales">
+              <div class="left">{{ item.skuName }} ：</div>
+              <div class="right">{{ item.count }}</div>
+            </div>
+          </el-col>
+        </el-row>
+      </Dialog>
     </div>
-
+    <!-- 底部页码 -->
     <div class="bottom">
       <div class="left">
         共{{ pageInfo.totalCount }}条数据 第{{ pageInfo.pageIndex }}/{{
@@ -76,21 +78,39 @@
         }}页
       </div>
       <div class="right">
-        <Button color="#d5ddf8" title="上一页" @click="lastPage"> </Button>
-        <Button color="#d5ddf8" title="下一页" @click="nextPage"> </Button>
+        <Button
+          color="#d5ddf8"
+          title="上一页"
+          @click="lastPage"
+          :disabled="disabled"
+        >
+        </Button>
+        <Button
+          color="#d5ddf8"
+          title="下一页"
+          @click="nextPage"
+          :disabled="disabled2"
+        >
+        </Button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import StateTop from "./component/state-top.vue";
 import Button from "@/components/ls-button";
-import { getmachineList } from "@/api/machine";
+import Dialog from "@/components/Dialogue";
+import {
+  getmachineList,
+  getGoodsSales,
+  getFixNum,
+  getsupplyNum,
+} from "@/api/machine";
 export default {
-  components: { Button },
+  components: { Button, Dialog, StateTop },
   data() {
     return {
-      num: "",
       tableData: [
         {
           innerCode: "",
@@ -100,53 +120,110 @@ export default {
           status: "",
         },
       ],
+      goodsSalesList: [],
+      fixNum: "",
+      supplyNum: "",
       pageInfo: {},
       page: 1,
+      visible: false,
+      disabled: false,
+      disabled2: false,
     };
   },
   created() {
     this.getmachineList();
   },
   methods: {
-    query() {
-      console.log("query");
+    // 查询设备编号
+    async query(code) {
+      console.log(code);
+      const res = await getmachineList({
+        innerCode: code,
+      });
+      this.pageInfo = res.data;
+      console.log(res.data);
+      this.tableData = res.data.currentPageRecords;
     },
+    // 弹出框
     details(val) {
-      console.log(val);
+      this.visible = true;
+      this.getGoodsSales(val);
+      this.getFixNum(val);
+      this.getsupplyNum(val);
+      // console.log(val);
     },
+    // 页码
     indexMethod(index) {
       return index + 1 + 10 * (this.page - 1);
     },
-
     // 获取售货机列表
     async getmachineList() {
       const { data } = await getmachineList({
         pageIndex: this.page,
       });
-      console.log(data);
+      // console.log(data.currentPageRecords);
       this.pageInfo = data;
       this.tableData = data.currentPageRecords;
     },
+    // 上一页
     lastPage() {
+      if (this.page < 2) {
+        this.disabled = true;
+        return;
+      }
+      this.disabled = false;
       this.page--;
       this.getmachineList();
     },
+    // 下一页
     nextPage() {
+      if (this.page >= this.pageInfo.totalPage) {
+        this.page = this.pageInfo.totalPage;
+        this.disabled2 = true;
+        return;
+      }
+      this.disabled2 = false;
       this.page++;
       this.getmachineList();
+    },
+    // 获取售货机商品销量
+    async getGoodsSales(val) {
+      const startTime = val.createTime.substr(0, 10);
+      const endTime = this.dayjs().format("YYYY-MM-DD");
+      const res = await getGoodsSales(val.innerCode, startTime, endTime, {
+        vmType: val.type.typeId,
+        nodeId: val.region.id,
+        createUserId: val.node.createUserId,
+      });
+      // console.log(res.data);
+      this.goodsSalesList = res.data;
+    },
+    // 获取售货机维修次数
+    async getFixNum(val) {
+      const startTime = val.createTime.substr(0, 10);
+      const endTime = this.dayjs().format("YYYY-MM-DD");
+      const res = await getFixNum(val.innerCode, startTime, endTime, {
+        vmType: val.type.typeId,
+        nodeId: val.region.id,
+        createUserId: val.node.createUserId,
+      });
+      this.fixNum = res.data;
+    },
+    // 获取售货机补货次数
+    async getsupplyNum(val) {
+      const startTime = val.createTime.substr(0, 10);
+      const endTime = this.dayjs().format("YYYY-MM-DD");
+      const res = await getsupplyNum(val.innerCode, startTime, endTime, {
+        vmType: val.type.typeId,
+        nodeId: val.region.id,
+        createUserId: val.node.createUserId,
+      });
+      this.supplyNum = res.data;
     },
   },
 };
 </script>
 <style scoped lang="scss">
-.top {
-  padding: 20px;
-  .box-card {
-    .query-btn {
-      margin-left: 5px;
-    }
-  }
-}
 .main {
   .vm-status {
     display: flex;
@@ -169,6 +246,19 @@ export default {
       width: 52px;
       height: 23px;
       background: #ff665f linear-gradient(135deg, #ffb043, #ffc020);
+    }
+  }
+  .mid-title {
+    padding: 20px 0 10px;
+  }
+  .sales {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 40px;
+    border: 1px solid #ccc;
+    .left {
+      width: 60%;
     }
   }
 }
