@@ -45,3 +45,26 @@ export const setNewItemType = (data) => {
     data
   })
 }
+// 修改商品类型
+export const ModifyItemType = (id, data) => {
+  return request({
+    url: '/api/vm-service/skuClass/' + id,
+    method: 'PUT',
+    data
+  })
+}
+// 删除商品类型
+export const DeleteItemType = (id) => {
+  return request({
+    url: '/api/vm-service/skuClass/' + id,
+    method: 'DELETE'
+  })
+}
+// 商品数据导入
+export const CommodityDataImport = (data) => {
+  return request({
+    url: '/api/vm-service/sku/upload',
+    method: 'POST',
+    data
+  })
+}

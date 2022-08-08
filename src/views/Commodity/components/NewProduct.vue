@@ -25,7 +25,7 @@
         <el-input v-model="fromData.unit" />
       </el-form-item>
       <el-form-item v-model="fromData.skuImage" label="商品图片：" prop="skuImage">
-        <el-upload class="avatar-uploader" :show-file-list="false" action="" :http-request="handlePictureCardPreview" :before-upload="beforeAvatarUpload">
+        <el-upload class="avatar-uploader" :show-file-list="false" action="" accept=".jpg, .png" :http-request="handlePictureCardPreview" :before-upload="beforeAvatarUpload">
           <img v-if="!!fromData.skuImage" :src="fromData.skuImage" class="avatar" style="width: 80px; height: 80px">
           <i v-else class="el-icon-upload2 avatar-uploader-icon" style="width: 80px; height: 80px ; font-size: 20px;" />
           <div slot="tip" class="el-upload_tip">仅支持扩展名为jpg/png文件，且不超过100kb</div>
@@ -95,16 +95,11 @@ export default {
       this.fromData.skuImage = data
     },
     beforeAvatarUpload(file) {
-      const isJPG = file.type === 'image/jpeg'
       const isLt2kb = file.size / 1024 / 1024 < 0.100
-
-      if (!isJPG) {
-        this.$message.error('上传头像图片只能是 JPG/PNG 格式!')
-      }
       if (!isLt2kb) {
         this.$message.error('上传头像图片大小不能超过 100kb!')
       }
-      return isJPG && isLt2kb
+      return isLt2kb
     },
     async getCommodityType() {
       const { data } = await getCommodityType()
