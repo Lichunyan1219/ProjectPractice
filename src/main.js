@@ -15,6 +15,8 @@ import * as directives from '@/directives'
 import '@/icons' // icon
 import '@/permission' // permission control
 import '@/assets/fonts/iconfont.css'
+import dayjs from "dayjs";
+Vue.prototype.dayjs = dayjs;
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
