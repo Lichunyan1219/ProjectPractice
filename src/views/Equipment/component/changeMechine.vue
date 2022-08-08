@@ -96,7 +96,7 @@ export default {
 
   methods: {
     async handleAvatarSuccess(file) {
-      console.log(file.file);
+      
       const formData = new FormData();
       formData.append("fileName", file.file);
       const { data } = await getPhoto(formData);
