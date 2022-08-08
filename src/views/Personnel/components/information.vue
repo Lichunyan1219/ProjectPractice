@@ -10,9 +10,9 @@
       <!-- 角色 -->
       <el-form-item label="角色：">
         <el-select style="width: 80%" placeholder="请选择" :value="item">
-            <el-option
-              :value="'打打打'"
-            />
+          <el-option
+            :value="'打打打'"
+          />
         </el-select>
       </el-form-item>
       <!-- 角色 -->
@@ -26,16 +26,16 @@
       <!-- 负责区域 -->
       <el-form-item label="负责区域：">
         <el-select style="width: 80%" placeholder="请选择" :value="item">
-            <el-option
-              :value="'打打打'"
-            />
+          <el-option
+            :value="'打打打'"
+          />
         </el-select>
       </el-form-item>
       <!-- 负责区域 -->
 
       <!-- 图片 -->
       <el-form-item label="头像：">
-        <el-image style="width: 100px; height: 100px" :src="url"></el-image>
+        <el-image style="width: 100px; height: 100px" :src="url" />
         <div class="jpg-png">支持扩展名：jpg、png，文件不得大于100kb</div>
       </el-form-item>
       <!-- 图片 -->
@@ -55,34 +55,34 @@
 </template>
 
 <script>
-import LsButton from "@/components/ls-button"; //按钮
+import LsButton from '@/components/ls-button' // 按钮
 export default {
-  data() {
-    return {
-      item: 0,
-      url: "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
-      checked: true,
-    };
+
+  components: {
+    LsButton
   },
   props: {
     visible: {
       type: Boolean,
-      required: true,
-    },
+      required: true
+    }
   },
-
-  components: {
-    LsButton,
+  data() {
+    return {
+      item: 0,
+      url: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
+      checked: true
+    }
   },
 
   created() {},
 
   methods: {
-      onClose() {
+    onClose() {
       this.$emit('update:visible', false)
-      }
-  },
-};
+    }
+  }
+}
 </script>
 
 <style scoped lang="scss">

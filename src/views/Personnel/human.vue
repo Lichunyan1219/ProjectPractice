@@ -16,7 +16,7 @@
 <script>
 export default {
   data() {
-    return {};
+    return {}
   },
   computed: {},
   watch: {},
@@ -24,8 +24,8 @@ export default {
   created() {},
   // 生命周期 - 挂载完成（可以访问DOM元素）
   mounted() {},
-  methods: {},
-};
+  methods: {}
+}
 </script>
 <style scoped lang="scss">
 .app-main {

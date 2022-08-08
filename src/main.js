@@ -4,7 +4,7 @@ import 'normalize.css/normalize.css' // A modern alternative to CSS resets
 
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
-import locale from 'element-ui/lib/locale/lang/en' // lang i18n
+// import locale from 'element-ui/lib/locale/lang/en' // lang i18n
 
 import '@/styles/index.scss' // global css
 
@@ -15,8 +15,8 @@ import * as directives from '@/directives'
 import '@/icons' // icon
 import '@/permission' // permission control
 import '@/assets/fonts/iconfont.css'
-import dayjs from "dayjs";
-Vue.prototype.dayjs = dayjs;
+import dayjs from 'dayjs'
+Vue.prototype.dayjs = dayjs
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
@@ -35,9 +35,9 @@ for (const key in directives) {
 //   return moment.unix(input).format('YYYY-MM-DD')
 // })
 // set ElementUI lang to EN
-Vue.use(ElementUI, { locale })
-// 如果想要中文版 element-ui，按如下方式声明
-// Vue.use(ElementUI)
+// Vue.use(ElementUI, { locale })
+// // 如果想要中文版 element-ui，按如下方式声明
+Vue.use(ElementUI)
 
 Vue.config.productionTip = false
 

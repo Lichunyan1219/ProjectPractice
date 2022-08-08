@@ -3,31 +3,32 @@
   <div>
     <!-- 头部 -->
     <div class="WorkOrder">
+
       <el-form v-model="searchFrom" class="title-from" label-width="80px" label-position="right">
         <search ref="search" title="工单搜索" :model.sync="searchFrom.taskCode" />
         <DropDown ref="DropDown" title="工单状态" :model.sync="searchFrom.status" :work="WorkOrderStatus" />
-      <el-form
-        v-model="searchFrom"
-        class="title-from"
-        label-width="80px"
-        label-position="right"
-      >
-        <search
-          ref="search"
-          title="工单搜索"
-          :model.sync="searchFrom.taskCode"
-        />
-        <DropDown
-          id="statusId"
-          ref="DropDown"
-          name="statusName"
-          title="工单状态"
-          :model.sync="searchFrom.status"
-          :work="WorkOrderStatus"
-        />
-        <lsButton @click="JobSearch" />
-      </el-form>
-    </div>
+        <el-form
+          v-model="searchFrom"
+          class="title-from"
+          label-width="80px"
+          label-position="right"
+        >
+          <search
+            ref="search"
+            title="工单搜索"
+            :model.sync="searchFrom.taskCode"
+          />
+          <DropDown
+            id="statusId"
+            ref="DropDown"
+            name="statusName"
+            title="工单状态"
+            :model.sync="searchFrom.status"
+            :work="WorkOrderStatus"
+          />
+          <lsButton @click="JobSearch" />
+        </el-form>
+      </el-form></div>
     <div>
       <!-- 添加按钮 -->
       <lsButton
@@ -87,8 +88,7 @@
         <DropDown ref="DropDown" :work="WorkOrderTypeList" title="工单类型" />
         <el-form-item label="补货数量">
           <span class="BackOrder">
-            <i class="el-icon-document" /> <span>补货清单</span></span
-          >
+            <i class="el-icon-document" /> <span>补货清单</span></span>
         </el-form-item>
         <!-- 运营人员 -->
         <DropDown ref="DropDown" :work="WorkOrderStatus" title="运营人员" />
@@ -106,18 +106,18 @@
 </template>
 
 <script>
-import MessageBox from "@/components/MessageBox";
-import search from "@/components/search";
-import DropDown from "@/components/DropDown";
-import lsButton from "@/components/ls-button";
+import MessageBox from '@/components/MessageBox'
+import search from '@/components/search'
+import DropDown from '@/components/DropDown'
+import lsButton from '@/components/ls-button'
 import {
   getWorkOrderStatus,
   getWorkOrderList,
-  getWorkOrderType,
-} from "@/api/WorkOrder";
-import moment from "moment";
-import tableColumn from "@/components/tablecolumn";
-import Dialogue from "@/components/Dialogue";
+  getWorkOrderType
+} from '@/api/WorkOrder'
+import moment from 'moment'
+import tableColumn from '@/components/tablecolumn'
+import Dialogue from '@/components/Dialogue'
 export default {
   components: {
     search,
@@ -125,35 +125,35 @@ export default {
     lsButton,
     tableColumn,
     Dialogue,
-    MessageBox,
+    MessageBox
   },
   data() {
     return {
       WorkOrderStatus: [], // 工单状态数据
       WorkOrderList: [], // 工单列表数据 // 工单列表数据
-      Pag: "", // 分页数据
+      Pag: '', // 分页数据
       pageIndex: 1,
       disable: true,
       disable1: false,
-      status: "",
-      taskCode: "",
+      status: '',
+      taskCode: '',
       moment,
       searchFrom: {
         // 搜索表单数据
-        status: "",
-        taskCode: "",
+        status: '',
+        taskCode: ''
       },
       visible: false, // 新建弹出框
-      WorkOrderTypeList: [], // 工单状态列表
-    };
+      WorkOrderTypeList: [] // 工单状态列表
+    }
   },
   computed: {},
   watch: {},
   // 生命周期 - 创建完成（可以访问当前this实例）
   created() {
-    this.getWorkOrderList();
-    this.getWorkOrderStatus();
-    this.getWorkOrderType();
+    this.getWorkOrderList()
+    this.getWorkOrderStatus()
+    this.getWorkOrderType()
   },
   // 生命周期 - 挂载完成（可以访问DOM元素）
   mounted() {},
@@ -163,70 +163,70 @@ export default {
       const { data } = await getWorkOrderList({
         pageIndex: this.pageIndex,
         ...this.searchFrom,
-        isRepair: false,
-      });
+        isRepair: false
+      })
       // console.log(data);
       const workList = await this.ProcessingWorkOrderStatus(
         data.currentPageRecords
-      );
-      this.WorkOrderList = workList;
-      this.Pag = data;
+      )
+      this.WorkOrderList = workList
+      this.Pag = data
     },
     // 获取工单状态
     async getWorkOrderStatus() {
-      const { data } = await getWorkOrderStatus();
-      this.WorkOrderStatus = data;
+      const { data } = await getWorkOrderStatus()
+      this.WorkOrderStatus = data
     },
     // 上一页
     NextPage() {
       if (this.pageIndex < this.Pag.totalPage) {
-        this.pageIndex++;
-        this.disable = false;
-        return this.getWorkOrderList();
+        this.pageIndex++
+        this.disable = false
+        return this.getWorkOrderList()
       }
-      this.disable1 = true;
+      this.disable1 = true
     },
     // 下一页
     PreviousPage() {
       if (this.pageIndex > 1) {
-        this.pageIndex--;
-        return this.getWorkOrderList();
+        this.pageIndex--
+        return this.getWorkOrderList()
       }
-      this.disable = true;
+      this.disable = true
     },
     // 搜索
     async JobSearch() {
-      this.getWorkOrderList();
-      console.log(this.$refs.search);
+      this.getWorkOrderList()
+      console.log(this.$refs.search)
     },
     // 处理工单状态
     ProcessingWorkOrderStatus(data) {
       data.forEach((ele) => {
         ele.createType === 0
-          ? (ele.createType = "自动")
-          : (ele.createType = "手动");
+          ? (ele.createType = '自动')
+          : (ele.createType = '手动')
         ele.updateTime = this.moment(ele.updateTime)
           .utcOffset(8)
-          .format("YYYY.MM.DD HH:mm:ss");
-      });
-      return data;
+          .format('YYYY.MM.DD HH:mm:ss')
+      })
+      return data
     },
     // 取消关闭添加弹窗
     CancelWork() {
-      this.visible = false;
+      this.visible = false
     },
     // 点击添加打开弹窗
     AddWorkOrder() {
-      this.visible = true;
+      this.visible = true
     },
     // 获取工单类型
     async getWorkOrderType() {
-      const { data } = await getWorkOrderType();
-      this.WorkOrderTypeList = data;
-      console.log(data);
-    },
-  },
-};
+      const { data } = await getWorkOrderType()
+      this.WorkOrderTypeList = data
+      console.log(data)
+    }
+  }
+}
 </script>
 <style scoped lang="scss">
 .WorkOrder {
