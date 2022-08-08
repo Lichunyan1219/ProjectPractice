@@ -26,7 +26,6 @@ export default {
   },
   data() {
     return {
-      dialogVisible: false
     }
   },
   computed: {},
@@ -42,7 +41,7 @@ export default {
   methods: {
     handleClose() {
       this.$emit('update:visible', false)
-    }
+    },
   }
 }
 </script>

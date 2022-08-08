@@ -1,51 +1,63 @@
 <!--搜索框组件  -->
 <template>
   <el-form-item :label="title">
-    <el-input v-model="input" placeholder="请输入" :clearable="true" />
+    <el-input
+      v-model="input"
+      placeholder="请输入"
+      :clearable="true"
+      :maxlength="number"
+      show-word-limit
+    />
   </el-form-item>
 </template>
 
 <script>
-
 export default {
   components: {},
   props: {
     title: {
       type: String,
-      default: ''
+      default: "",
     },
     model: {
       type: String,
-      default: ''
-    }
+      default: "",
+    },
+    number: {
+      type: String,
+      default: "",
+    },
+    maxlength: {
+      type: String,
+      default: "",
+    },
+    // eslint-disable-next-line vue/require-default-prop
+    prop: {
+      type: Array,
+    },
   },
   data() {
     return {
-      input: ''
-    }
+      input: "",
+    };
   },
   computed: {},
   watch: {
     input: {
       handler(a, b) {
-        this.$emit('update:model', a)
-      }
-    }
+        this.$emit("update:model", a);
+      },
+    },
   },
   // 生命周期 - 创建完成（可以访问当前this实例）
-  created() {
-
-  },
+  created() {},
   // 生命周期 - 挂载完成（可以访问DOM元素）
-  mounted() {
-
-  },
-  methods: {
-  }
-}
+  mounted() {},
+  methods: {},
+};
 </script>
 <style scoped>
-.search{
+.search {
   display: flex;
   font-size: 14px;
   justify-content: center;

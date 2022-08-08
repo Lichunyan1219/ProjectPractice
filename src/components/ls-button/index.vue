@@ -64,4 +64,8 @@ export default {
   background-color: #d5ddf8;
   color:#333 !important;
 }
+.cancel{
+  background-color: #fbf4f0;
+  color:#333 !important;
+}
 </style>
