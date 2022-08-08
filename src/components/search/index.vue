@@ -29,7 +29,7 @@ export default {
     },
     maxlength: {
       type: String,
-      default: ''
+      default: "",
     },
     // eslint-disable-next-line vue/require-default-prop
     prop: {
