@@ -38,7 +38,7 @@ export const getsupplyNum = (code, start, end, data) => {
 export const getMachineTypeList = (data) => {
   return request({
     url: "/api/vm-service/vmType/search",
-    params:data
+    params: data,
   });
 };
 
@@ -60,10 +60,25 @@ export const delMachineType = (typeId) => {
 };
 
 // 售货机类型修改
-export const fixMachineType = (typeId ,data)=> {
+export const fixMachineType = (typeId, data) => {
   return request({
-    method:"PUT",
+    method: "PUT",
     url: "/api/vm-service/vmType/" + typeId,
-    data
-  })
-}
+    data,
+  });
+};
+
+// 获取售货机货道详情
+export const getMachineRoad = (innerCode) => {
+  return request({
+    url: "/api/vm-service/channel/channelList/" + innerCode,
+  });
+};
+
+// 策略列表
+export const getTactics = (params) => {
+  return request({
+    url: "/api/vm-service/policy",
+    params
+  });
+};
