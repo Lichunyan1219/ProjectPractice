@@ -89,6 +89,9 @@ export default {
       required: true
     }
   },
+  components: {
+    LsButton
+  },
   data() {
     return {
       item: 0,
@@ -114,10 +117,10 @@ export default {
       // console.log(this.peoples);
     },
 
-    async getUserRegionSearch () {
-      const res = await getUserRegionSearchApi()
-      // console.log(res);
-    }
+    // async getUserRegionSearch () {
+    //   const res = await getUserRegionSearchApi()
+    //   // console.log(res);
+    // }
   },
 };
 </script>
