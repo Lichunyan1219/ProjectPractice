@@ -11,7 +11,7 @@
       >
         <Search
           ref="search"
-          title="人员搜索："
+          title="人员搜索"
           class="title-searchs"
           :model.sync="searchFrom.taskCode"
         ></Search>
@@ -39,7 +39,7 @@
       >
         <Tablecolumn title="操作">
           <el-button type="text" @click="redact">编辑</el-button>
-          <el-button type="text" class="el-button1">删除</el-button>
+          <el-button type="text" class="el-button1" @click="onRemove">删除</el-button>
         </Tablecolumn>
         <Tablecolumn
           title="序号"
@@ -83,7 +83,7 @@ import LsButton from "@/components/ls-button"; //按钮
 import Search from "@/components/search"; //输入框
 import Tablecolumn from "@/components/tablecolumn"; //列表
 import Information from "./components/information.vue";
-import { getSearchApi } from "@/api/essential";
+import { getSearchApi, deleteUserIDApi } from "@/api/essential";
 export default {
   data() {
     return {
@@ -96,7 +96,6 @@ export default {
       dialogVisible: false,
       searchFrom: {
         // 搜索表单数据
-        status: "",
         taskCode: "",
       },
     };
@@ -125,10 +124,10 @@ export default {
       });
       this.page = data;
       this.listste = data.currentPageRecords;
-      // console.log(data);
-      const workList = await data.currentPageRecords;
-      this.WorkOrderList = workList;
-      this.page = data;
+      console.log(data);
+      // const workList = await data.currentPageRecords;
+      // this.WorkOrderList = workList;
+      // this.page = data;
     },
     // 下一页
     NextPage() {
@@ -157,6 +156,23 @@ export default {
     redact() {
       this.dialogVisible = true;
     },
+
+    // 删除
+    async onRemove () {
+      try {
+        await this.$confirm('此操作将永久删除该部门, 是否继续?', '提示', {
+          confirmButtonText: '删除',
+          cancelButtonText: '取消',
+          type: 'text',
+        })
+        await deleteUserIDApi(this.listste.id)
+        this.$message.success('删除成功')
+        // this.$emit('remove')
+        console.log(this.listste.id);
+      } catch (error) {
+        console.log(error);
+      }
+    }
   },
 };
 </script>

@@ -9,10 +9,18 @@
 
       <!-- 角色 -->
       <el-form-item label="角色：">
-        <el-select style="width: 80%" placeholder="请选择" :value="item">
-            <el-option
-              :value="'打打打'"
-            />
+        <el-select
+          style="width: 80%"
+          placeholder="请选择"
+          :value="item"
+          v-model="formData.roleName"
+        >
+          <el-option
+            v-for="item in peoples"
+            :key="item.id"
+            :label="item.roleName"
+            :value="item.roleName"
+          />
         </el-select>
       </el-form-item>
       <!-- 角色 -->
@@ -26,9 +34,12 @@
       <!-- 负责区域 -->
       <el-form-item label="负责区域：">
         <el-select style="width: 80%" placeholder="请选择" :value="item">
-            <el-option
-              :value="'打打打'"
-            />
+          <el-option
+            v-for="item in peoples"
+            :key="item.id"
+            :label="item.roleName"
+            :value="item.roleName"
+          />
         </el-select>
       </el-form-item>
       <!-- 负责区域 -->
@@ -55,6 +66,7 @@
 </template>
 
 <script>
+import { getUserRoleApi, getUserRegionSearchApi } from "@/api/essential";
 import LsButton from "@/components/ls-button"; //按钮
 export default {
   data() {
@@ -62,6 +74,13 @@ export default {
       item: 0,
       url: "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
       checked: true,
+      formData: {
+        userName: "", //人员名称
+        regionName: "", //归属区域
+        roleName: "", //角色
+        mobile: "", //联系电话
+      },
+      peoples: [], // 接收获取的角色列表的数据
     };
   },
   props: {
@@ -75,12 +94,27 @@ export default {
     LsButton,
   },
 
-  created() {},
+  created() {
+    this.getUserRoleApi();
+    this.getUserRegionSearch()
+  },
 
   methods: {
-      onClose() {
-      this.$emit('update:visible', false)
-      }
+    onClose() {
+      this.$emit("update:visible", false);
+    },
+
+    // 角色列表
+    async getUserRoleApi() {
+      const { data } = await getUserRoleApi();
+      this.peoples = data;
+      // console.log(this.peoples);
+    },
+
+    async getUserRegionSearch () {
+      const res = await getUserRegionSearchApi()
+      // console.log(res);
+    }
   },
 };
 </script>

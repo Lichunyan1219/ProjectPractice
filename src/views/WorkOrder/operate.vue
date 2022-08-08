@@ -173,6 +173,7 @@ export default {
     async getWorkOrderStatus() {
       const { data } = await getWorkOrderStatus();
       this.WorkOrderStatus = data;
+      console.log(data);
     },
     // 上一页
     NextPage() {
