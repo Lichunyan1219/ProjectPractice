@@ -11,7 +11,7 @@
     <div>
       <!-- 添加按钮 -->
       <lsButton icon="el-icon-circle-plus-outline" color="addBtn" title="新建" @click="ClosePopUpWindow" />
-      <lsButton title="导入数据" color="config" />
+      <lsButton title="导入数据" color="config" @click="FileImport" />
       <el-table :data="commodityList" style="width: 100%" :lazy="true" empty-text="暂无数据" type="index">
         <!-- <tableColumn title="操作" label="查看详情"><el-button type="text">修改</el-button></tableColumn> -->
         <el-table-column
@@ -38,6 +38,8 @@
     <Dialogue :visible.sync="visible" title="新增商品">
       <NewProduct ref="NewProduct" :judge="Judge" @click="ClosePopUpWindow" @AddClose="AddClose" @Modify="Modify" />
     </Dialogue>
+    <!-- 导入数据弹框 -->
+    <Dialogue title="文件导入" :visible.sync="visible1"><FileImport @CancelBtn="FileImport" /></Dialogue>
   </div>
 </template>
 
@@ -48,6 +50,7 @@ import lsButton from '@/components/ls-button'
 import moment from 'moment'
 import tableColumn from '@/components/tablecolumn'
 import Dialogue from '@/components/Dialogue'
+import FileImport from './components/FileImport.vue'
 import { getCommodityList, getCommodityType, ModifyItem } from '@/api/CommodityManagement'
 export default {
   name: 'CommodityManagement',
@@ -56,11 +59,13 @@ export default {
     lsButton,
     tableColumn,
     Dialogue,
-    NewProduct
+    NewProduct,
+    FileImport
   },
   data() {
     return {
       commodityList: [], // 列表数据
+      visible1: false, // 文件导入弹框
       dialogImageUrl: '',
       fromData: {
         skuImage: '',
@@ -142,7 +147,7 @@ export default {
       this.ItemTypeList = data
       console.log(data)
     },
-    // 关闭弹窗
+    // 新增关闭弹窗
     ClosePopUpWindow() {
       this.visible = !this.visible
     },
@@ -174,6 +179,10 @@ export default {
       this.Judge = true
       this.visible = false
       this.getCommodityList()
+    },
+    // 文件导入弹框
+    FileImport() {
+      this.visible1 = !this.visible1
     }
   }
 }

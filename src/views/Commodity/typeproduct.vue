@@ -16,9 +16,9 @@
         label="操作"
         width="180px"
       >
-        <template>
-          <el-button type="text">修改</el-button>
-          <el-button type="text" style="color: red;">删除</el-button>
+        <template slot-scope="scope">
+          <el-button type="text" @click="Modify(scope.row)">修改</el-button>
+          <el-button type="text" style="color: red;" @click="DeleteItemType(scope.row.classId)">删除</el-button>
         </template>
       </el-table-column>
       <tableColumn title="序号" type="index" :pag=" ItemTypeData.pageIndex" />
@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import { getCommodityType, setNewItemType } from '@/api/CommodityManagement'
+import { getCommodityType, setNewItemType, ModifyItemType, DeleteItemType } from '@/api/CommodityManagement'
 import tableColumn from '@/components/tablecolumn'
 import search from '@/components/search'
 import lsButton from '@/components/ls-button'
@@ -62,14 +62,16 @@ export default {
   },
   data() {
     return {
-      ItemTypeData: {},
-      className: '',
-      visible: false,
-      fromData: {
+      ItemTypeData: {}, // 类型数据
+      className: '', // 搜索内容
+      visible: false, // 弹窗
+      classId: '', // 修改类型id
+      mode: true, // 判断是新增还是修改
+      fromData: { // 表单数据
         className: ''
       },
-      formRules: {
-        className: [{ required: true, message: '请输入活动名称', trigger: 'blur' }]
+      formRules: { // 表单校验
+        className: [{ required: true, message: '请输入商品类型名称', trigger: 'blur' }]
       },
       pageIndex: 1 // 当前页数
     }
@@ -96,9 +98,9 @@ export default {
       this.getCommodityType()
     },
     NextPage() {
-      if (this.pageIndex <= this.ItemTypeData.totalPage) {
+      if (this.pageIndex < this.ItemTypeData.totalPage) {
         this.pageIndex++
-        return this.getCommodityList()
+        return this.getCommodityType()
       }
       this.$message.warning('已经是最后一页了')
     },
@@ -106,24 +108,58 @@ export default {
     PreviousPage() {
       if (this.pageIndex > 1) {
         this.pageIndex--
-        return this.getCommodityList()
+        return this.getCommodityType()
       }
       this.pageIndex = 1
       this.$message.warning('已经是第一页了')
     },
+    // 新建 / 修改
     async addCommodity() {
       try {
         await this.$refs.fromData.validate()
-        try {
-          const res = await setNewItemType(this.fromData)
-          if (res) {
-            this.visible = false
+        if (this.mode) {
+          console.log(111)
+          try {
+            const res = await setNewItemType(this.fromData)
+            if (res) {
+              this.$message.success('添加成功')
+              this.getCommodityType()
+              this.visible = false
+              this.$refs.fromData.resetFields()
+            }
+          } catch (err) {
+            console.log(err)
           }
-        } catch (err) {
-          console.log(err)
+        } else {
+          console.log(222)
+          const res = await ModifyItemType(this.classId, this.fromData)
+
+          if (res) {
+            this.$message.success('修改成功')
+            this.getCommodityType()
+            this.visible = false
+            this.mode = true
+            this.$refs.fromData.resetFields()
+          }
         }
       } catch (err) {
         console.log(err)
+      }
+    },
+    // 修改点击
+    Modify(val) {
+      console.log(val)
+      this.visible = true
+      this.mode = false
+      this.classId = val.classId
+      this.fromData.className = val.className
+    },
+    // 删除
+    async DeleteItemType(id) {
+      const res = await DeleteItemType(id)
+      if (res) {
+        this.$message.success('删除成功')
+        this.getCommodityType()
       }
     }
   }
