@@ -5,7 +5,7 @@
     <div class="WorkOrder">
       <el-form v-model="searchFrom" class="title-from" label-width="80px" label-position="right">
         <search ref="search" title="工单搜索" :model.sync="searchFrom.taskCode" />
-        <DropDown id="statusId" ref="DropDown" name="statusName" title="工单状态" :model.sync="searchFrom.status" :work="WorkOrderStatus" />
+        <DropDown ref="DropDown" title="工单状态" :model.sync="searchFrom.status" :work="WorkOrderStatus" />
         <lsButton @click="JobSearch" />
       </el-form>
     </div>

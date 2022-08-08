@@ -1,7 +1,7 @@
 <!--搜索框组件  -->
 <template>
-  <el-form-item :label="title">
-    <el-input v-model="input" placeholder="请输入" :clearable="true" />
+  <el-form-item :prop="prop" :label="title">
+    <el-input v-model="input" placeholder="请输入" :clearable="true" :maxlength="maxlength" show-word-limit />
   </el-form-item>
 </template>
 
@@ -17,6 +17,14 @@ export default {
     model: {
       type: String,
       default: ''
+    },
+    maxlength: {
+      type: String,
+      default: ''
+    },
+    // eslint-disable-next-line vue/require-default-prop
+    prop: {
+      type: Array
     }
   },
   data() {

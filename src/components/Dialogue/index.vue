@@ -3,8 +3,8 @@
   <div>
     <el-dialog
       :title="title"
-      :visible.sync="visible"
-      width="40%"
+      :visible="visible"
+      width="50%"
       :before-close="handleClose"
     ><slot /></el-dialog>
   </div>
@@ -26,7 +26,6 @@ export default {
   },
   data() {
     return {
-      dialogVisible: false
     }
   },
   computed: {},

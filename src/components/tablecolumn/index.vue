@@ -1,13 +1,30 @@
 <!-- eslint-disable vue/valid-v-bind -->
 <!-- 表格组件 -->
 <template>
-  <div>  <el-table-column
-    :prop="label"
-    :label="title"
-    :type="type"
-    :index="indexmethod"
-  ><slot />
-  </el-table-column>
+  <div>
+    <el-table-column
+      v-if="!img"
+      :prop="label"
+      :label="title"
+      :type="type"
+      :index="indexmethod"
+    >
+      <slot />
+    </el-table-column>
+    <el-table-column
+      v-if="img"
+      :prop="label"
+      :label="title"
+      :type="type"
+      :index="indexmethod"
+    >
+      <template slot-scope="scope">
+        <el-image
+          style="width: 30px; height: 30px"
+          :src="scope.row.skuImage"
+        />
+      </template>
+    </el-table-column>
   </div>
 </template>
 
@@ -16,9 +33,10 @@
 export default {
   components: {},
   props: {
+    // eslint-disable-next-line vue/require-default-prop
     title: {
       type: String,
-      required: true
+      required: false
     },
     // eslint-disable-next-line vue/require-default-prop
     label: {
@@ -33,6 +51,10 @@ export default {
     // eslint-disable-next-line vue/require-default-prop
     pag: {
       type: String
+    },
+    img: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
