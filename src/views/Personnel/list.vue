@@ -85,7 +85,6 @@ import Tablecolumn from "@/components/tablecolumn"; //列表
 import Information from "./components/information.vue";
 import { getSearchApi } from "@/api/essential";
 export default {
-  components: {},
   data() {
     return {
       page: {},

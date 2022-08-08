@@ -72,7 +72,6 @@ import Tablecolumn from "@/components/tablecolumn"; //列表
 import Particulars from "./components/particulars.vue";
 import { getUserSearchUserWork } from "@/api/essential"
 export default {
-  components: {},
   data() {
     return {
       statusId: 0,
