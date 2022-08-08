@@ -4,10 +4,10 @@
       <el-form ref="form" label-width="80px" :inline="true">
         <el-form-item :label="label">
           <el-input
+            v-model="code"
             style="width: 206px"
             placeholder="请输入"
-            v-model="code"
-          ></el-input>
+          />
         </el-form-item>
         <Button
           class="query-btn"
@@ -15,37 +15,37 @@
           title="查询"
           color="#5f84ff"
           @click="query"
-        ></Button>
+        />
       </el-form>
     </el-card>
   </div>
 </template>
 
 <script>
-import Button from "@/components/ls-button";
+import Button from '@/components/ls-button'
 export default {
+  components: {
+    Button
+  },
   props: {
     label: {
-      type: String,
-    },
-  },
-  components: {
-    Button,
+      type: String
+    }
   },
   data() {
     return {
-      code: "",
-    };
+      code: ''
+    }
   },
 
   created() {},
 
   methods: {
     query() {
-      this.$emit("click", this.code);
-    },
-  },
-};
+      this.$emit('click', this.code)
+    }
+  }
+}
 </script>
 
 <style scoped lang="scss">

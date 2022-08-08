@@ -48,3 +48,15 @@ export const amendPolicy = (data, policyId) => {
     data
   })
 }
+
+/**
+ *  策略详情
+ * @param {Object} data
+ * @returns promise
+ */
+export const Strategiesdetails = (policyId, params) => {
+  return request({
+    url: `/api/vm-service/policy/vmList/${policyId}`,
+    params
+  })
+}

@@ -3,43 +3,43 @@
     <el-form ref="form" :model="machineInfo" label-width="80px">
       <el-form-item label="型号名称" required>
         <el-input
+          v-model="machineInfo.name"
           placeholder="请输入"
           maxlength="10"
           show-word-limit
-          v-model="machineInfo.name"
-        ></el-input>
+        />
       </el-form-item>
       <el-form-item label="型号编码" required>
         <el-input
+          v-model="machineInfo.model"
           placeholder="请输入（限制数字、字母、中划线、下划线）"
           maxlength="15"
           show-word-limit
-          v-model="machineInfo.model"
-        ></el-input>
+        />
       </el-form-item>
       <el-form-item label="货道行数" required>
         <el-input-number
-          controls-position="right"
           v-model="machineInfo.vmRow"
+          controls-position="right"
           :min="1"
           :max="10"
-        ></el-input-number>
+        />
       </el-form-item>
       <el-form-item label="货道列数" required>
         <el-input-number
-          controls-position="right"
           v-model="machineInfo.vmCol"
+          controls-position="right"
           :min="1"
           :max="10"
-        ></el-input-number>
+        />
       </el-form-item>
       <el-form-item label="货道容量" required>
         <el-input-number
-          controls-position="right"
           v-model="machineInfo.channelMaxCapacity"
+          controls-position="right"
           :min="1"
           :max="10"
-        ></el-input-number>
+        />
       </el-form-item>
       <el-form-item label="设备图像" required>
         <el-upload
@@ -53,86 +53,85 @@
             v-if="machineInfo.image"
             :src="machineInfo.image"
             class="avatar"
-          />
-          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          >
+          <i v-else class="el-icon-plus avatar-uploader-icon" />
         </el-upload>
         支持扩展名：jpg、png，文件不得大于100kb
       </el-form-item>
     </el-form>
     <div class="bottom-but">
-      <Button color="config" title="取消"></Button>
-      <Button color="addBtn" title="确认" @click="addcheckYes"></Button>
+      <Button color="config" title="取消" />
+      <Button color="addBtn" title="确认" @click="addcheckYes" />
     </div>
   </Dialog>
 </template>
 
 <script>
-import Button from "@/components/ls-button";
-import Dialog from "@/components/Dialogue";
-import { getPhoto } from "@/api/public";
+import Button from '@/components/ls-button'
+import Dialog from '@/components/Dialogue'
+import { getPhoto } from '@/api/public'
 export default {
-  props: {
-    visible: {
-      type: Boolean,
-    },
-  },
   components: {
     Button,
-    Dialog,
+    Dialog
+  },
+  props: {
+    visible: {
+      type: Boolean
+    }
   },
   data() {
     return {
       machineInfo: {
-        name: "",
-        model: "",
+        name: '',
+        model: '',
         vmRow: 1,
         vmCol: 1,
         channelMaxCapacity: 1,
-        image: "",
-      },
-    };
-  },
-  created() {},
-
-  methods: {
-    async handleAvatarSuccess(file) {
-      
-      const formData = new FormData();
-      formData.append("fileName", file.file);
-      const { data } = await getPhoto(formData);
-      console.log(data);
-      // this.machineInfo.image = URL.createObjectURL(file.raw);
-      this.machineInfo.image = data;
-    },
-    beforeAvatarUpload(file) {
-      const isJPG = file.type === "image/jpeg";
-      const isLt100kb = file.size / 1024 / 1024 < 0.1;
-      if (!isJPG) {
-        this.$message.error("上传头像图片只能是 JPG 格式!");
+        image: ''
       }
-      if (!isLt100kb) {
-        this.$message.error("上传头像图片大小不能超过 100KB!");
-      }
-      return isJPG && isLt100kb;
-      // return isLt100kb;
-    },
-    addcheckYes() {
-      this.$emit("addcheckYes", this.machineInfo);
-    },
+    }
   },
 
   computed: {
     visible2: {
       get() {
-        return this.visible;
+        return this.visible
       },
       set(val) {
-        //grants_改变由父组件控制
-        this.$emit("on-change", val);
-      },
-    },
+        // grants_改变由父组件控制
+        this.$emit('on-change', val)
+      }
+    }
   },
-};
+  created() {},
+
+  methods: {
+    async handleAvatarSuccess(file) {
+      const formData = new FormData()
+      formData.append('fileName', file.file)
+      const { data } = await getPhoto(formData)
+      console.log(data)
+      // this.machineInfo.image = URL.createObjectURL(file.raw);
+      this.machineInfo.image = data
+    },
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === 'image/jpeg'
+      const isLt100kb = file.size / 1024 / 1024 < 0.1
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG 格式!')
+      }
+      if (!isLt100kb) {
+        this.$message.error('上传头像图片大小不能超过 100KB!')
+      }
+      return isJPG && isLt100kb
+      // return isLt100kb;
+    },
+    addcheckYes() {
+      this.$emit('addcheckYes', this.machineInfo)
+    }
+  }
+}
 </script>
 
 <style scoped lang="scss">
