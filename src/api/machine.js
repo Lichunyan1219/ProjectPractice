@@ -35,9 +35,10 @@ export const getsupplyNum = (code, start, end, data) => {
 };
 
 // 获取售货机类型列表
-export const getMachineTypeList = () => {
+export const getMachineTypeList = (data) => {
   return request({
     url: "/api/vm-service/vmType/search",
+    params:data
   });
 };
 
@@ -49,3 +50,20 @@ export const addMachineType = (data) => {
     data,
   });
 };
+
+// 售货机类型删除
+export const delMachineType = (typeId) => {
+  return request({
+    method: "DELETE",
+    url: "/api/vm-service/vmType/" + typeId,
+  });
+};
+
+// 售货机类型修改
+export const fixMachineType = (typeId ,data)=> {
+  return request({
+    method:"PUT",
+    url: "/api/vm-service/vmType/" + typeId,
+    data
+  })
+}

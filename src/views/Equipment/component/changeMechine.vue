@@ -60,7 +60,7 @@
       </el-form-item>
     </el-form>
     <div class="bottom-but">
-      <Button color="config" title="取消"></Button>
+      <Button color="config" title="取消" @click="cancelCheckNo"></Button>
       <Button color="addBtn" title="确认" @click="addcheckYes"></Button>
     </div>
   </Dialog>
@@ -74,6 +74,10 @@ export default {
   props: {
     visible: {
       type: Boolean,
+    },
+    currentMachine: {
+      type: Object,
+      required: true,
     },
   },
   components: {
@@ -93,10 +97,18 @@ export default {
     };
   },
   created() {},
+  watch: {
+    currentMachine: {
+      handler() {
+        this.machineInfo = this.currentMachine;
+      },
+      deep: true,
+    },
+  },
 
   methods: {
+    // 处理图片上传
     async handleAvatarSuccess(file) {
-      
       const formData = new FormData();
       formData.append("fileName", file.file);
       const { data } = await getPhoto(formData);
@@ -104,6 +116,7 @@ export default {
       // this.machineInfo.image = URL.createObjectURL(file.raw);
       this.machineInfo.image = data;
     },
+    // 图片上传规则
     beforeAvatarUpload(file) {
       const isJPG = file.type === "image/jpeg";
       const isLt100kb = file.size / 1024 / 1024 < 0.1;
@@ -116,9 +129,19 @@ export default {
       return isJPG && isLt100kb;
       // return isLt100kb;
     },
-    addcheckYes() {
-      this.$emit("addcheckYes", this.machineInfo);
+    // 点击添加或修改
+    async addcheckYes() {
+      if (this.machineInfo.typeId) {
+          this.$emit("fixcheckYes", this.machineInfo);
+      } else {
+         this.$emit("addcheckYes", this.machineInfo);
+      }
+      // this.$refs.form.resetFields()
     },
+    // 点击取消
+    cancelCheckNo(){
+      this.visible2 = false;
+    }
   },
 
   computed: {
