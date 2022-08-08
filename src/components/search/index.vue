@@ -1,6 +1,5 @@
 <!--搜索框组件  -->
 <template>
-<<<<<<< HEAD
   <el-form-item :label="title">
     <el-input
       v-model="input"
@@ -9,11 +8,6 @@
       :maxlength="number"
       show-word-limit
     />
-=======
-  <el-form-item :prop="prop" :label="title">
-    <el-input v-model="input" placeholder="请输入" :clearable="true" :maxlength="maxlength" show-word-limit />
->>>>>>> caf07fb82de3fa30e866b7b799b7ff3ef9ab3336
-  </el-form-item>
 </template>
 
 <script>
@@ -26,14 +20,11 @@ export default {
     },
     model: {
       type: String,
-<<<<<<< HEAD
       default: "",
     },
     number:{
       type:String,
       default:''
-=======
-      default: ''
     },
     maxlength: {
       type: String,
@@ -42,7 +33,6 @@ export default {
     // eslint-disable-next-line vue/require-default-prop
     prop: {
       type: Array
->>>>>>> caf07fb82de3fa30e866b7b799b7ff3ef9ab3336
     }
   },
   data() {

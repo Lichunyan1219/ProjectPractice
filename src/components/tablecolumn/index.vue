@@ -3,20 +3,13 @@
 <template>
   <div>
     <el-table-column
-<<<<<<< HEAD
-=======
       v-if="!img"
->>>>>>> caf07fb82de3fa30e866b7b799b7ff3ef9ab3336
       :prop="label"
       :label="title"
       :type="type"
       :index="indexmethod"
-<<<<<<< HEAD
       ><slot />
       <!-- <template slot-scope="scope" @click="list(scope.row)"></template> -->
-=======
-    >
-      <slot />
     </el-table-column>
     <el-table-column
       v-if="img"
@@ -31,7 +24,6 @@
           :src="scope.row.skuImage"
         />
       </template>
->>>>>>> caf07fb82de3fa30e866b7b799b7ff3ef9ab3336
     </el-table-column>
   </div>
 </template>
@@ -43,11 +35,7 @@ export default {
     // eslint-disable-next-line vue/require-default-prop
     title: {
       type: String,
-<<<<<<< HEAD
       required: true,
-=======
-      required: false
->>>>>>> caf07fb82de3fa30e866b7b799b7ff3ef9ab3336
     },
     // eslint-disable-next-line vue/require-default-prop
     label: {
@@ -61,17 +49,12 @@ export default {
     },
     // eslint-disable-next-line vue/require-default-prop
     pag: {
-<<<<<<< HEAD
       type: String,
-    },
-=======
-      type: String
     },
     img: {
       type: Boolean,
       default: false
     }
->>>>>>> caf07fb82de3fa30e866b7b799b7ff3ef9ab3336
   },
   data() {
     return {};
