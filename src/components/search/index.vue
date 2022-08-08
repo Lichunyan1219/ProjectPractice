@@ -8,6 +8,7 @@
       :maxlength="number"
       show-word-limit
     />
+  </el-form-item>
 </template>
 
 <script>
@@ -22,18 +23,18 @@ export default {
       type: String,
       default: "",
     },
-    number:{
-      type:String,
-      default:''
+    number: {
+      type: String,
+      default: "",
     },
     maxlength: {
       type: String,
-      default: ''
+      default: "",
     },
     // eslint-disable-next-line vue/require-default-prop
     prop: {
-      type: Array
-    }
+      type: Array,
+    },
   },
   data() {
     return {

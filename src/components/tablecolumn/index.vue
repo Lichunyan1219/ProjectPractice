@@ -35,7 +35,7 @@ export default {
     // eslint-disable-next-line vue/require-default-prop
     title: {
       type: String,
-      required: true,
+      required: false,
     },
     // eslint-disable-next-line vue/require-default-prop
     label: {

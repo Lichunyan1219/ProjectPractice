@@ -3,11 +3,9 @@
   <div>
     <!-- 头部 -->
     <div class="WorkOrder">
-<<<<<<< HEAD
       <el-form v-model="searchFrom" class="title-from" label-width="80px" label-position="right">
         <search ref="search" title="工单搜索" :model.sync="searchFrom.taskCode" />
         <DropDown ref="DropDown" title="工单状态" :model.sync="searchFrom.status" :work="WorkOrderStatus" />
-=======
       <el-form
         v-model="searchFrom"
         class="title-from"
@@ -27,7 +25,6 @@
           :model.sync="searchFrom.status"
           :work="WorkOrderStatus"
         />
->>>>>>> b85db86e160292d6c409091ed049542e13cbbc91
         <lsButton @click="JobSearch" />
       </el-form>
     </div>
