@@ -4,9 +4,9 @@
     <el-select v-model.trim="input" filterable placeholder="请选择" :clearable="true" style="width:100%">
       <el-option
         v-for="item in work"
-        :key="item.id"
-        :label="item.name"
-        :value="item.id"
+        :key="item.statusId"
+        :label="item.statusName"
+        :value="item.statusId"
       />
     </el-select>
   </el-form-item>
@@ -22,14 +22,6 @@ export default {
     title: {
       type: String,
       default: ''
-    },
-    id: {
-      type: String,
-      required: true
-    },
-    name: {
-      type: String,
-      required: true
     },
     // eslint-disable-next-line vue/require-prop-types
     model: {
