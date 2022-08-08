@@ -31,7 +31,17 @@
         <lsButton icon="el-icon-circle-plus-outline" color="addBtn" title="新建" @click="addBtn" />
       </div>
       <div class="Strategy-main">
-        <el-table :data="tableData" style="width: 100%" :lazy="true" empty-text="暂无数据" type="index" highlight-current-row>
+        <el-table
+          :header-cell-style="{
+            'background-color':'#fafafa'
+          }"
+          :data="tableData"
+          style="width: 100%"
+          :lazy="true"
+          empty-text="暂无数据"
+          type="index"
+          highlight-current-row
+        >
           <el-table-column label="操作">
             <template slot-scope="scope">
               <el-button type="text" @click="lookDetails(scope.row)">查看详情</el-button>

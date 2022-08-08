@@ -60,3 +60,15 @@ export const Strategiesdetails = (policyId, params) => {
     params
   })
 }
+
+/**
+ *  策略搜索
+ * @param {Object} policy 请求对象
+ * @returns promise
+ */
+export const getIndentSearch = (params) => {
+  return request({
+    url: '/api/order-service/order/search',
+    params
+  })
+}

@@ -14,7 +14,18 @@
       <template slot="label">
         <span class="label-text"> 策略方案: </span>
       </template>
-      <el-table v-loading="loading" :data="tableData" style="width: 100%" :lazy="true" empty-text="暂无数据" type="index" highlight-current-row>
+      <el-table
+        v-loading="loading"
+        :header-cell-style="{
+          'background-color':'#fafafa'
+        }"
+        :data="tableData"
+        style="width: 100%"
+        :lazy="true"
+        empty-text="暂无数据"
+        type="index"
+        highlight-current-row
+      >
         <el-table-column
           label="序号"
           type="index"
