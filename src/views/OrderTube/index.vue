@@ -98,7 +98,7 @@
           />
           <el-table-column label="操作">
             <template slot-scope="scope">
-              <el-button type="text" @click="lineitem(scope)">查看详情</el-button>
+              <el-button type="text" @click="lookDetails(scope.row)">查看详情</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -110,6 +110,17 @@
         </div>
       </div>
     </body>
+    <el-dialog
+      title="订单详情"
+      :visible="visible"
+      width="630px"
+      :before-close="()=>{ visible = false}"
+    >
+      <keep-alive>
+        <Detailsofpopups ref="Detailsofpopups" />
+      </keep-alive>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -117,9 +128,11 @@
 import { getIndentSearch } from '@/api/strategy'
 import lsButton from '@/components/ls-button'
 import moment from 'moment' // 处理时间
+import Detailsofpopups from './components/Detailsofpopups'
 export default {
   components: {
-    lsButton
+    lsButton,
+    Detailsofpopups
   },
   data() {
     return {
@@ -136,10 +149,12 @@ export default {
       disable1: false, // 页脚禁用
       disable: false, //
       loading: false, // 加载
-      timequantum: [] // 时间段
+      timequantum: [], // 时间段
+      visible: false // 弹层开关
     }
   },
-  computed: {},
+  computed: {
+  },
   watch: {},
   // 生命周期 - 创建完成（可以访问当前this实例）
   created() {
@@ -170,8 +185,11 @@ export default {
       this.searchFrom.endDate = this.timequantum[1]
       this.searchFrom.startDate = this.timequantum[0]
     },
-    lineitem(label) {
-      console.log(label)
+    lookDetails(row) {
+      this.visible = true
+      this.$nextTick(() => {
+        this.$refs.Detailsofpopups.getDetail(row)
+      })
     },
     // 处理工单状态
     ProcessingWorkOrderStatus(data) {
