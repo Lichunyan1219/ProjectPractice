@@ -95,7 +95,18 @@
       </div>
     </el-dialog>
     <!-- 策略弹框 -->
-    <manasgeTactics :dialogTactics="dialogTactics" @on-change="changedialogTactics"></manasgeTactics>
+    <manasgeTactics
+      v-if="0"
+      :dialogTactics="dialogTactics"
+      @on-change="changedialogTactics"
+      :tacticsList="tacticsList"
+    ></manasgeTactics>
+    <manasgeTacticsCheck
+      v-else
+      :dialogTactics="dialogTactics"
+      @on-change="changedialogTactics"
+      s
+    ></manasgeTacticsCheck>
     <!-- 底部页码区域 -->
     <StateBottom
       :pageInfo="pageInfo"
@@ -111,6 +122,7 @@ import StateBottom from "./component/state-bottom.vue";
 import Dialog from "@/components/Dialogue";
 import Button from "@/components/ls-button";
 import manasgeTactics from "./component/manage-Tactics.vue";
+import manasgeTacticsCheck from "./component/manage-Tactics-check.vue";
 import {
   getmachineList,
   getMachineRoad,
@@ -118,7 +130,14 @@ import {
   getTactics,
 } from "@/api/machine";
 export default {
-  components: { StateTop, Button, StateBottom, Dialog, manasgeTactics },
+  components: {
+    StateTop,
+    Button,
+    StateBottom,
+    Dialog,
+    manasgeTactics,
+    manasgeTacticsCheck,
+  },
   data() {
     return {
       tableData: [
@@ -199,8 +218,8 @@ export default {
       this.tacticsList = res.data;
       console.log(res.data);
     },
-    changedialogTactics(val){
-      this.dialogTactics = val
+    changedialogTactics(val) {
+      this.dialogTactics = val;
     },
     // 上一页
     lastPage() {
