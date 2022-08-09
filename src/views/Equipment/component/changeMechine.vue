@@ -3,43 +3,43 @@
     <el-form ref="form" :model="machineInfo" label-width="80px">
       <el-form-item label="型号名称" required>
         <el-input
-          v-model="machineInfo.name"
           placeholder="请输入"
           maxlength="10"
           show-word-limit
-        />
+          v-model="machineInfo.name"
+        ></el-input>
       </el-form-item>
       <el-form-item label="型号编码" required>
         <el-input
-          v-model="machineInfo.model"
           placeholder="请输入（限制数字、字母、中划线、下划线）"
           maxlength="15"
           show-word-limit
-        />
+          v-model="machineInfo.model"
+        ></el-input>
       </el-form-item>
       <el-form-item label="货道行数" required>
         <el-input-number
-          v-model="machineInfo.vmRow"
           controls-position="right"
+          v-model="machineInfo.vmRow"
           :min="1"
           :max="10"
-        />
+        ></el-input-number>
       </el-form-item>
       <el-form-item label="货道列数" required>
         <el-input-number
-          v-model="machineInfo.vmCol"
           controls-position="right"
+          v-model="machineInfo.vmCol"
           :min="1"
           :max="10"
-        />
+        ></el-input-number>
       </el-form-item>
       <el-form-item label="货道容量" required>
         <el-input-number
-          v-model="machineInfo.channelMaxCapacity"
           controls-position="right"
+          v-model="machineInfo.channelMaxCapacity"
           :min="1"
           :max="10"
-        />
+        ></el-input-number>
       </el-form-item>
       <el-form-item label="设备图像" required>
         <el-upload
@@ -54,7 +54,7 @@
             :src="machineInfo.image"
             class="avatar"
           />
-          <i v-else class="el-icon-plus avatar-uploader-icon" />
+          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
         支持扩展名：jpg、png，文件不得大于100kb
       </el-form-item>
@@ -83,11 +83,6 @@ export default {
   components: {
     Button,
     Dialog,
-  },
-  props: {
-    visible: {
-      type: Boolean,
-    },
   },
   data() {
     return {
@@ -134,9 +129,16 @@ export default {
       return isJPG && isLt100kb;
       // return isLt100kb;
     },
-    addcheckYes() {
-      this.$emit("addcheckYes", this.machineInfo);
+    // 点击添加或修改
+    async addcheckYes() {
+      if (this.machineInfo.typeId) {
+        this.$emit("fixcheckYes", this.machineInfo);
+      } else {
+        this.$emit("addcheckYes", this.machineInfo);
+      }
+      // this.$refs.form.resetFields()
     },
+    // 点击取消
     cancelCheckNo() {
       this.visible2 = false;
     },
