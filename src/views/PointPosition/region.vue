@@ -20,15 +20,21 @@
         size="mini"
         title="新建"
         color="addBtn"
+<<<<<<< HEAD
         @click="dialogVisible = true"
       />
+=======
+        @click="newClick"
+      ></lsButton>
+>>>>>>> feature/point
       <el-table ref="aabb" :data="regionalManagementData.currentPageRecords">
-        <el-table-column label="日期">
+        <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button
               type="text"
               class="viewDetails"
               @click="viewDetailsClick(scope.row)"
+<<<<<<< HEAD
             >查看详情</el-button>
             <el-button type="text" class="modify">修改</el-button>
             <el-button
@@ -36,6 +42,19 @@
               class="del"
               @click="delClick(scope.row)"
             >删除</el-button>
+=======
+              >查看详情</el-button
+            >
+            <el-button
+              type="text"
+              class="modify"
+              @click="modifyClick(scope.row)"
+              >修改</el-button
+            >
+            <el-button type="text" class="del" @click="delClick(scope.row)"
+              >删除</el-button
+            >
+>>>>>>> feature/point
           </template>
         </el-table-column>
         <tableColumn
@@ -48,7 +67,13 @@
         <tableColumn title="备注说明" label="remark" />
       </el-table>
       <!-- 新增对话框 -->
-      <Dialog :visible.sync="dialogVisible" class="newDialog" title="新增区域">
+      <el-dialog
+        :visible.sync="dialogVisible"
+        width="50%"
+        :before-close="handleClose"
+        :title="dialogShow ? '新增点位' : '修改点位'"
+        class="newDialog"
+      >
         <el-form
           ref="form"
           :model="formData"
@@ -67,7 +92,7 @@
             </el-form-item>
           </div>
           <div class="remarks">
-            <el-form-item label="备注说明" required prop="remark">
+            <el-form-item label="备注说明" prop="remark">
               <el-input
                 v-model="formData.remark"
                 placeholder="请输入备注(不超过40字)"
@@ -81,8 +106,13 @@
               size="mini"
               title="取消"
               color="cancel"
+<<<<<<< HEAD
               @click="dialogVisible = false"
             />
+=======
+              @click="onClose"
+            ></lsButton>
+>>>>>>> feature/point
             <lsButton
               size="mini"
               title="确认"
@@ -91,7 +121,7 @@
             />
           </div>
         </el-form>
-      </Dialog>
+      </el-dialog>
       <!-- 查看详情对话框 -->
       <Dialog :visible.sync="dialogVisible1" class="newDialog" title="区域详情">
         <p>
@@ -99,8 +129,17 @@
         </p>
         <div class="pointPosition">
           <span>包含点位：</span>
+<<<<<<< HEAD
           <el-table ref="aabb" :data="areaDetailsList.currentPageRecords">
             <tableColumn title="设备数量" label="vmCount" />
+=======
+          <el-table
+            ref="aabb"
+            empty-text="暂无数据"
+            :data="areaDetailsList.currentPageRecords"
+          >
+            <tableColumn title="设备数量" label="vmCount"></tableColumn>
+>>>>>>> feature/point
             <tableColumn
               title="序号"
               type="index"
@@ -148,11 +187,20 @@ import lsButton from '@/components/ls-button'
 import {
   areaList,
   newArea,
+<<<<<<< HEAD
   getAreaDetails,
   deleteArea
 } from '@/api/pointManagement'
 import tableColumn from '@/components/tablecolumn'
 import Dialog from '@/components/Dialogue'
+=======
+  pointSearch,
+  deleteArea,
+  modifyArea,
+} from "@/api/pointManagement";
+import tableColumn from "@/components/tablecolumn";
+import Dialog from "@/components/Dialogue";
+>>>>>>> feature/point
 export default {
   components: {
     search,
@@ -161,6 +209,7 @@ export default {
     Dialog
   },
   data() {
+<<<<<<< HEAD
     const checkDeptRegionName = (rule, value, callback) => {
       const isRepeat = this.regionalManagementData.currentPageRecords.some(
         (item) => {
@@ -170,6 +219,8 @@ export default {
       if (isRepeat) return callback(new Error('已存在此名称的对象'))
       callback()
     }
+=======
+>>>>>>> feature/point
     return {
       // 区域列表
       regionalManagementData: {},
@@ -191,6 +242,7 @@ export default {
       },
       formRules: {
         regionName: [
+<<<<<<< HEAD
           { required: true, message: '请输入区域名称', trigger: 'blur' },
           { validator: checkDeptRegionName, trigger: 'blur' }
         ],
@@ -199,6 +251,19 @@ export default {
         ]
       }
     }
+=======
+          { required: true, message: "请输入区域名称", trigger: "blur" },
+        ],
+        remark: [
+          { required: true, message: "请输入备注说明", trigger: "blur" },
+        ],
+      },
+      //控制新增、修改对话框发送新增请求还是修改请求
+      dialogShow: true,
+      //存储点击修改该行的id
+      modifyId: "",
+    };
+>>>>>>> feature/point
   },
   computed: {},
   watch: {},
@@ -209,7 +274,11 @@ export default {
   // 生命周期 - 挂载完成（可以访问DOM元素）
   mounted() {},
   methods: {
+<<<<<<< HEAD
     // 获取区域列表
+=======
+    //获取区域管理列表
+>>>>>>> feature/point
     async getAreaList() {
       const { data } = await areaList({
         pageIndex: this.pageIndex,
@@ -241,6 +310,7 @@ export default {
         this.disable = false
       }
     },
+<<<<<<< HEAD
     // 新建按钮点击事件
     newClick() {
       this.showNewDialog = true
@@ -257,25 +327,66 @@ export default {
       } catch (error) {
         // console.log(111111);
         this.$message.error('新增部门失败')
+=======
+    //新建对话框的关闭事件
+    handleClose() {
+      this.$refs.form.resetFields();
+      this.dialogVisible = false;
+    },
+    //新建、修改取消按钮点击事件
+    onClose(){
+      this.handleClose()
+    },
+    //新建、修改确定按钮点击事件
+    async onSave() {
+      if (this.dialogShow) {
+        await this.$refs.form.validate();
+        const res = await newArea(this.formData);
+        console.log(res);
+        this.$message.success("新增区域成功");
+        this.dialogVisible = false;
+      } else {
+        const res = await modifyArea(this.formData, this.modifyId);
+        console.log(res);
+        this.$message.success("修改区域成功");
+        this.dialogVisible = false;
+        this.getAreaList();
+>>>>>>> feature/point
       }
+      this.formData.regionName = "";
+      this.formData.remark = "";
+    },
+    //新建点击事件
+    newClick() {
+      this.dialogVisible = true;
+      this.dialogShow = true;
     },
     // 查看详情点击事件
     async viewDetailsClick(val) {
-      console.log(val)
-      this.zoneName = val.name
-      this.dialogVisible1 = true
-      // 获取区域详情
-      const res = await getAreaDetails(val.id)
-      this.areaDetailsList = res.data
-      console.log(res.data)
+      console.log(val);
+      this.zoneName = val.name;
+      this.dialogVisible1 = true;
+      //获取区域详情
+      const res = await pointSearch({regionId:val.id});
+      this.areaDetailsList = res.data;
+      console.log(res.data);
     },
-    // 删除点击事件
+    //修改点击事件
+    modifyClick(modefyValue) {
+      this.formData.regionName = modefyValue.name;
+      this.formData.remark = modefyValue.remark;
+      this.dialogVisible = true;
+      this.dialogShow = false;
+      this.modifyId = modefyValue.id;
+    },
+    //删除点击事件
     async delClick(value) {
-      const res = await deleteArea(value.id)
-      console.log(res)
+      const res = await deleteArea(value.id);
+      console.log(res);
+      this.getAreaList();
     }
-  }
-}
+  },
+};
 </script>
 <style scoped lang="scss">
 /* 头部 */
