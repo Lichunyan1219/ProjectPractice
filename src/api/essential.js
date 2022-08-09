@@ -2,11 +2,11 @@ import request from '@/utils/request'
 
 // 获取用户基本信息
 // /api/user-service/user/:id
-// export const getUserIdApi = (id) => {
-//     return request({
-//         url: `/api/user-service/user/${id}`
-//     })
-// }
+export const getUserIdApi = (id) => {
+    return request({
+        url: `/api/user-service/user/${id}`
+    })
+}
 
 // 获取用户工作量(工单统计)
 // /api/task-service/task/userWork
@@ -59,5 +59,14 @@ export const deleteUserIDApi = (id) => {
     return request({
         url: '/api/user-service/user/' + id,
         method: 'DELETE'
+    })
+}
+
+// 新增人员
+// /api/user-service/user
+export const postUserApi = (data) => {
+    return request({
+        url: '/api/user-service/user',
+        data
     })
 }

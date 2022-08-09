@@ -59,6 +59,17 @@
             <div class="date-item">年</div>
           </div>
         </div>
+
+        <div class="app-imgs">
+          
+          <div class="app-imgs1">
+            <img
+              src="http://likede2-admin.itheima.net/img/empty.87c4f71b.png"
+              alt=""
+            />
+            <div>暂无数据</div>
+          </div>
+        </div>
       </div>
       <div class="app-main-details-1 app-main-details-ranking">1111</div>
     </div>
@@ -219,7 +230,24 @@ export default {
             color: #9ca3b4;
           }
         }
-        
+        .app-imgs {
+          height: 100%;
+          width: 100%;
+          // position: absolute;
+          user-select: none;
+          // background-color: rgb(255, 0, 0);
+          
+          .app-imgs1 {
+            position: absolute;
+            top: 130px;
+            margin-top: 130px;
+            left: 150px;
+            // display: flex;
+            // justify-content: center;
+            // width: 100%;
+            // height: 100%;
+          }
+        }
       }
     }
     .app-main-details-ranking {
