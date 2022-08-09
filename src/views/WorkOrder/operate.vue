@@ -85,7 +85,7 @@
 </template>
 
 <script>
-import MessageBox from '@/components/MessageBox'
+import BulletFrame from './components/BulletFrame.vue'
 import search from '@/components/search'
 import DropDown from '@/components/DropDown'
 import lsButton from '@/components/ls-button'
@@ -104,7 +104,7 @@ export default {
     lsButton,
     tableColumn,
     Dialogue,
-    MessageBox
+    BulletFrame
   },
   data() {
     return {
@@ -114,6 +114,7 @@ export default {
       pageIndex: 1,
       disable: true,
       disable1: false,
+      DetailDisplay: 1,
       status: '',
       taskCode: '',
       moment,
@@ -123,6 +124,8 @@ export default {
         taskCode: ''
       },
       visible: false, // 新建弹出框
+      visible1: false, // 取消弹窗
+      WorkOrderDetails: {}, // 工单详细信息
       WorkOrderTypeList: [] // 工单状态列表
     }
   },
@@ -201,8 +204,25 @@ export default {
     // 获取工单类型
     async getWorkOrderType() {
       const { data } = await getWorkOrderType()
-      this.WorkOrderTypeList = data
-      console.log(data)
+      // this.WorkOrderTypeList = data
+      this.WorkOrderTypeList = data.filter((ele) => (ele.type === 2))
+      console.log(this.WorkOrderTypeList)
+    },
+    // 获取工单预警
+    async GetWorkOrderAlert() {
+      const { data } = await GetWorkOrderAlert()
+      this.num = data
+      this.visible1 = true
+    },
+    // 设置自动补货预警值
+    async SetUpAutomaticReplenishmentWarn() {
+      const { data } = await SetUpAutomaticReplenishmentWarn(this.num)
+      if (data) {
+        this.visible1 = false
+        this.$message.success('设置成功')
+      }
+    },
+    ViewDetails(val) {
     }
   }
 }

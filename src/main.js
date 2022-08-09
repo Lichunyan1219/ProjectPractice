@@ -11,6 +11,7 @@ import '@/styles/index.scss' // global css
 import App from './App'
 import store from './store'
 import router from './router'
+import echarts from 'echarts'
 import * as directives from '@/directives'
 import '@/icons' // icon
 import '@/permission' // permission control
@@ -44,6 +45,7 @@ Vue.config.productionTip = false
 new Vue({
   el: '#app',
   router,
+  echarts,
   store,
   render: h => h(App)
 })
