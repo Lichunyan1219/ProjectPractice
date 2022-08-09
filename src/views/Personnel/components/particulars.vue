@@ -26,6 +26,7 @@
 
 <script>
 import Tablecolumn from '@/components/tablecolumn' // 列表
+import { getUserIdApi } from '@/api/essential'
 export default {
 
   components: {
@@ -42,12 +43,19 @@ export default {
     return {}
   },
 
-  created() {},
+  created() {
+    // this.getUserIdApi()
+  },
 
   methods: {
     onClose() {
       this.$emit('update:visible', false)
-    }
+    },
+
+    // async getUserIdApi () {
+    //   const res = await getUserIdApi()
+    //   console.log(res);
+    // }
   }
 }
 </script>
