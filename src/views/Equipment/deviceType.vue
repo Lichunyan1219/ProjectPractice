@@ -33,27 +33,44 @@
               size="small"
               @click="handleClick(scope.row)"
             >修改</el-button>
-            <el-button type="text" size="small">删除</el-button>
+            <el-button type="text" size="small" @click="delMachine(scope.row)"
+              >删除</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
     </div>
+    <!-- 弹出层 -->
     <Dialog
       ref="machineDialog"
       :visible="visible"
+      :currentMachine="currentMachine"
       @on-change="changeFn"
       @addcheckYes="addcheckYesFn"
-    />
+      @fixcheckYes="fixcheckYesFn"
+    ></Dialog>
+    <!-- 底部页码 -->
+    <Bottom
+      :pageInfo="pageInfo"
+      @lastPage="lastPageFn"
+      @nextPage="nextPageFn"
+    ></Bottom>
   </div>
 </template>
 
 <script>
-import StateTop from './component/state-top.vue'
-import Button from '@/components/ls-button'
-import Dialog from './component/changeMechine.vue'
-import { getMachineTypeList, addMachineType } from '@/api/machine'
+import StateTop from "./component/state-top.vue";
+import Button from "@/components/ls-button";
+import Dialog from "./component/changeMechine.vue";
+import Bottom from "./component/state-bottom.vue";
+import {
+  getMachineTypeList,
+  addMachineType,
+  delMachineType,
+  fixMachineType,
+} from "@/api/machine";
 export default {
-  components: { Button, Dialog, StateTop },
+  components: { Button, Dialog, StateTop, Bottom },
   data() {
     return {
       tableData: [
@@ -66,40 +83,88 @@ export default {
           channelMaxCapacity: ''
         }
       ],
-      visible: false
-    }
+      visible: false,
+      currentMachine: {},
+      page: 1,
+      pageInfo: {},
+    };
   },
   created() {
     this.getMachineTypeList()
   },
   methods: {
     // 查询设备编号
-    query(val) {
-      console.log(val)
+    async query(val) {
+      console.log(val);
+      const res = await getMachineTypeList({
+        name: val,
+      });
+      this.tableData = res.data.currentPageRecords;
+      // console.log(res.data.currentPageRecords);
     },
     // 获取售货机类型列表
     async getMachineTypeList() {
-      const res = await getMachineTypeList()
-      console.log(res.data.currentPageRecords)
-      this.tableData = res.data.currentPageRecords
+      const res = await getMachineTypeList({
+        pageIndex: this.page,
+      });
+      // console.log(res.data.currentPageRecords);
+      this.tableData = res.data.currentPageRecords;
+      this.pageInfo = res.data;
     },
     // 添加设备
     async addMachine() {
-      this.visible = true
+      this.currentMachine = {
+        name: "",
+        model: "",
+        vmRow: 1,
+        vmCol: 1,
+        channelMaxCapacity: 1,
+        image: "",
+      };
+      this.visible = true;
+      // this.currentMachine = {};
     },
+    // 点击确定添加
     async addcheckYesFn(data) {
-      const res = await addMachineType(data)
-      console.log(res)
+      await addMachineType(data);
+      this.visible = false;
+      await this.getMachineTypeList();
+      this.$message.success("添加设备类型成功");
+      this.currentMachine = {};
     },
     // 修改设备类型
     handleClick(val) {
-      this.visible = true
-      console.log(val)
+      this.visible = true;
+      this.currentMachine = val;
+    },
+    async fixcheckYesFn(data) {
+      console.log(data.typeId);
+      await fixMachineType(data.typeId, data);
+      this.visible = false;
+      await this.getMachineTypeList();
+      this.$message.success("修改设备类型成功");
+      this.currentMachine = {};
+    },
+    // 删除设备类型
+    async delMachine(val) {
+      try {
+        await delMachineType(val.typeId);
+        await this.getMachineTypeList();
+        this.$message.success("删除设备类型成功");
+      } catch (error) {}
     },
     changeFn(val) {
-      this.visible = val
-    }
-  }
-}
+      this.visible = val;
+    },
+    lastPageFn() {
+      this.page--;
+      this.getMachineTypeList();
+    },
+    nextPageFn() {
+      this.page++;
+      this.getMachineTypeList();
+    },
+  },
+};
 </script>
 <style scoped lang="scss"></style>

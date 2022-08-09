@@ -60,8 +60,8 @@
       </el-form-item>
     </el-form>
     <div class="bottom-but">
-      <Button color="config" title="取消" />
-      <Button color="addBtn" title="确认" @click="addcheckYes" />
+      <Button color="config" title="取消" @click="cancelCheckNo"></Button>
+      <Button color="addBtn" title="确认" @click="addcheckYes"></Button>
     </div>
   </Dialog>
 </template>
@@ -71,6 +71,15 @@ import Button from '@/components/ls-button'
 import Dialog from '@/components/Dialogue'
 import { getPhoto } from '@/api/public'
 export default {
+  props: {
+    visible: {
+      type: Boolean,
+    },
+    currentMachine: {
+      type: Object,
+      required: true,
+    },
+  },
   components: {
     Button,
     Dialog
@@ -88,50 +97,60 @@ export default {
         vmRow: 1,
         vmCol: 1,
         channelMaxCapacity: 1,
-        image: ''
+        image: "",
+      },
+    };
+  },
+  created() {},
+  watch: {
+    currentMachine: {
+      handler() {
+        this.machineInfo = this.currentMachine;
+      },
+      deep: true,
+    },
+  },
+
+  methods: {
+    // 处理图片上传
+    async handleAvatarSuccess(file) {
+      const formData = new FormData();
+      formData.append("fileName", file.file);
+      const { data } = await getPhoto(formData);
+      console.log(data);
+      // this.machineInfo.image = URL.createObjectURL(file.raw);
+      this.machineInfo.image = data;
+    },
+    // 图片上传规则
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === "image/jpeg";
+      const isLt100kb = file.size / 1024 / 1024 < 0.1;
+      if (!isJPG) {
+        this.$message.error("上传头像图片只能是 JPG 格式!");
       }
-    }
+      if (!isLt100kb) {
+        this.$message.error("上传头像图片大小不能超过 100KB!");
+      }
+      return isJPG && isLt100kb;
+      // return isLt100kb;
+    },
+    addcheckYes() {
+      this.$emit("addcheckYes", this.machineInfo);
+    },
   },
 
   computed: {
     visible2: {
       get() {
-        return this.visible
+        return this.visible;
       },
       set(val) {
-        // grants_改变由父组件控制
-        this.$emit('on-change', val)
-      }
-    }
+        //grants_改变由父组件控制
+        this.$emit("on-change", val);
+      },
+    },
   },
-  created() {},
-
-  methods: {
-    async handleAvatarSuccess(file) {
-      const formData = new FormData()
-      formData.append('fileName', file.file)
-      const { data } = await getPhoto(formData)
-      console.log(data)
-      // this.machineInfo.image = URL.createObjectURL(file.raw);
-      this.machineInfo.image = data
-    },
-    beforeAvatarUpload(file) {
-      const isJPG = file.type === 'image/jpeg'
-      const isLt100kb = file.size / 1024 / 1024 < 0.1
-      if (!isJPG) {
-        this.$message.error('上传头像图片只能是 JPG 格式!')
-      }
-      if (!isLt100kb) {
-        this.$message.error('上传头像图片大小不能超过 100KB!')
-      }
-      return isJPG && isLt100kb
-      // return isLt100kb;
-    },
-    addcheckYes() {
-      this.$emit('addcheckYes', this.machineInfo)
-    }
-  }
-}
+};
 </script>
 
 <style scoped lang="scss">
