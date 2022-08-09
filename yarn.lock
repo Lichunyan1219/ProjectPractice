@@ -4134,7 +4134,7 @@ electron-to-chromium@^1.4.202:
 
 element-ui@2.13.2:
   version "2.13.2"
-  resolved "https://registry.npmmirror.com/element-ui/-/element-ui-2.13.2.tgz"
+  resolved "https://registry.npmmirror.com/element-ui/-/element-ui-2.13.2.tgz#582bf47aaaaaafe23ea1958fae217a687ad06447"
   integrity sha512-r761DRPssMPKDiJZWFlG+4e4vr0cRG/atKr3Eqr8Xi0tQMNbtmYU1QXvFnKiFPFFGkgJ6zS6ASkG+sellcoHlQ==
   dependencies:
     async-validator "~1.8.1"
