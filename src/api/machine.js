@@ -82,3 +82,32 @@ export const getTactics = (params) => {
     params
   });
 };
+
+// 应用策略
+export const useTactics = (innerCodeList,policyId)=>{
+  return request({
+    method: "PUT",
+    url: '/api/vm-service/vm/applyPolicy',
+    data:{
+      innerCodeList:innerCodeList,
+      policyId:policyId
+    }
+  })
+}
+
+// 修改售货机点位
+export const fixMachinePoint = (id , nodeId)=>{
+  return request({
+    method: 'PUT',
+    url:`/api/vm-service/vm/${id}/${nodeId}`
+  })
+}
+
+// 新增售货机
+export const addMachine = (data)=>{
+  return request({
+    method: 'POST',
+    url:'/api/vm-service/vm',
+    data
+  })
+}

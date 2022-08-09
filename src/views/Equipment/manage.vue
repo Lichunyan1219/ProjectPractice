@@ -31,7 +31,7 @@
             <button class="operate" @click="machineTactics(scope.row)">
               策略
             </button>
-            <button class="operate">修改</button>
+            <button class="operate" @click="fixmachine(scope.row)">修改</button>
           </template>
         </el-table-column>
       </el-table>
@@ -96,17 +96,36 @@
     </el-dialog>
     <!-- 策略弹框 -->
     <manasgeTactics
-      v-if="0"
+      v-if="!machineTacticsNameFlag"
       :dialogTactics="dialogTactics"
       @on-change="changedialogTactics"
+      @checktactics="this.getmachineList"
       :tacticsList="tacticsList"
+      :machineTacticsCode="machineTacticsCode"
     ></manasgeTactics>
     <manasgeTacticsCheck
       v-else
       :dialogTactics="dialogTactics"
       @on-change="changedialogTactics"
-      s
+      @canceltactic="this.getmachineList"
+      :machineTacticsName="machineTacticsName"
     ></manasgeTacticsCheck>
+    <!-- 修改弹框 -->
+    <el-dialog title="修改设备" :visible.sync="fixDialog" width="50%">
+      <fixMachineDialog
+        @callFix="fixDialog = false"
+        @addFix="addFix"
+        :fixMachineInfo="fixMachineInfo"
+        :fixPointInfo="fixPointInfo"
+      ></fixMachineDialog>
+    </el-dialog>
+    <!-- 新增弹框 -->
+    <el-dialog title="新增设备" :visible.sync="addMachineDialog" width="50%">
+      <addMachine
+        :addTypeInfo="addTypeInfo"
+        :addPointInfo="addPointInfo"
+      ></addMachine>
+    </el-dialog>
     <!-- 底部页码区域 -->
     <StateBottom
       :pageInfo="pageInfo"
@@ -123,12 +142,17 @@ import Dialog from "@/components/Dialogue";
 import Button from "@/components/ls-button";
 import manasgeTactics from "./component/manage-Tactics.vue";
 import manasgeTacticsCheck from "./component/manage-Tactics-check.vue";
+import fixMachineDialog from "./component/fixMachineDialog.vue";
+import addMachine from "./component/addMachine.vue";
 import {
   getmachineList,
   getMachineRoad,
   getMachineTypeList,
   getTactics,
+  fixMachinePoint,
 } from "@/api/machine";
+import { queryMachineTacticsAPI } from "@/api/strategy";
+import { getAreaDetails } from "@/api/pointManagement";
 export default {
   components: {
     StateTop,
@@ -137,6 +161,8 @@ export default {
     Dialog,
     manasgeTactics,
     manasgeTacticsCheck,
+    fixMachineDialog,
+    addMachine,
   },
   data() {
     return {
@@ -150,6 +176,7 @@ export default {
         },
       ],
       multipleSelection: [],
+      checkMultipleSelection: [],
       page: 1,
       pageInfo: {},
       // 控制货道弹出框
@@ -161,6 +188,16 @@ export default {
       machineRoadList: [],
       // 策略列表
       tacticsList: [],
+      machineTacticsName: {},
+      machineTacticsCode: [],
+      // 控制修改弹框
+      fixDialog: false,
+      fixMachineInfo: {},
+      fixPointInfo: [],
+      // 控制新增弹框
+      addMachineDialog: false,
+      addTypeInfo: [],
+      addPointInfo: [],
     };
   },
   created() {
@@ -173,21 +210,43 @@ export default {
       // return index + 1 + 10 * (this.page - 1);
     },
     // 查询设备
-    query(val) {
+    async query(val) {
       console.log(val);
+      const res = await getmachineList({
+        innerCode: val,
+      });
+      this.tableData = res.data.currentPageRecords;
     },
     // 新建设备
-    addMachine() {
-      console.log("add");
+    async addMachine() {
+      this.addMachineDialog = true;
+      const res = await getMachineTypeList();
+      const res2 = await getAreaDetails();
+      this.addTypeInfo = res.data.currentPageRecords;
+      this.addPointInfo = res2.data.currentPageRecords;
+      console.log(res2);
     },
     // 批量操作
-    moreMachine() {
-      console.log("more");
+    async moreMachine() {
+      if (this.multipleSelection.length) {
+        this.machineTacticsName = "";
+        const res = await getTactics();
+        this.tacticsList = res.data;
+        this.dialogTactics = true;
+      } else {
+        this.$message.warning("请勾选售货机");
+      }
     },
     // 选择框
     handleSelectionChange(val) {
       this.multipleSelection = val;
-      console.log(this.multipleSelection);
+      this.multipleSelection.forEach((item) => {
+        this.checkMultipleSelection.push(item.innerCode);
+      });
+      this.machineTacticsCode = Array.from(
+        new Set(this.checkMultipleSelection)
+      );
+      console.log(this.machineTacticsCode);
     },
     // 获取售货机列表
     async getmachineList() {
@@ -211,15 +270,31 @@ export default {
     },
     // 策略
     async machineTactics(val) {
-      this.dialogTactics = true;
       const res = await getTactics({
         innerCodeList: val.innerCode,
       });
       this.tacticsList = res.data;
-      console.log(res.data);
+      const res2 = await queryMachineTacticsAPI(val.innerCode);
+      this.machineTacticsName = res2.data;
+      this.machineTacticsCode.push(val.innerCode);
+      this.dialogTactics = true;
     },
     changedialogTactics(val) {
       this.dialogTactics = val;
+    },
+    // 修改
+    async fixmachine(val) {
+      this.fixDialog = true;
+      this.fixMachineInfo = val;
+      const res = await getAreaDetails();
+      console.log(val);
+      this.fixPointInfo = res.data.currentPageRecords;
+    },
+    async addFix(id, point) {
+      try {
+        await fixMachinePoint(id, point);
+        this.$message.success("点位修改成功");
+      } catch (error) {}
     },
     // 上一页
     lastPage() {
@@ -238,6 +313,11 @@ export default {
     // 滚动下一页
     rightScroll() {
       this.$refs.scrollContent.style.transform = "translateX(-850px)";
+    },
+  },
+  computed: {
+    machineTacticsNameFlag() {
+      return this.machineTacticsName ? true : false;
     },
   },
 };

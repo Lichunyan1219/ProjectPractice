@@ -11,7 +11,7 @@
             v-for="item in tacticsList"
             :key="item.policyId"
             :label="item.policyName"
-            :value="item.policyName"
+            :value="item.policyId"
           ></el-option>
         </el-select>
       </el-form-item>
@@ -26,6 +26,7 @@
 <script>
 import Dialog from "@/components/Dialogue";
 import Button from "@/components/ls-button";
+import { useTactics } from "@/api/machine";
 export default {
   components: {
     Dialog,
@@ -40,6 +41,9 @@ export default {
       type: Array,
       required: true,
     },
+    machineTacticsCode: {
+      type: Array,
+    },
   },
   data() {
     return {
@@ -51,10 +55,13 @@ export default {
 
   methods: {
     callMachine() {
-      console.log("取消");
+      this.visible2 = false;
     },
-    addMachine() {
-      console.log("确认修改");
+    async addMachine() {
+      await useTactics(this.machineTacticsCode, this.checkTactics);
+      this.$emit("checktactics");
+      this.visible2 = false;
+      this.$message.success('策略选择成功')
     },
   },
 

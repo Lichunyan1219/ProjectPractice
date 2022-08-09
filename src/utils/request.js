@@ -52,6 +52,7 @@ service.interceptors.response.use(
       router.push('/login')
     } else if (error?.response?.status === 500) {
       Message.error(error.response.data)
+      return Promise.reject(new Error(msg))
     } else if (error?.config?.url.startsWith('/api/vm-service/policy')) {
       Message.error(error?.response?.data)
     } else {

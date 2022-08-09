@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from "@/utils/request";
 /**
  *  策略搜索
  * @param {Object} policy 请求对象
@@ -6,10 +6,10 @@ import request from '@/utils/request'
  */
 export const getPolicySearch = (params) => {
   return request({
-    url: '/api/vm-service/policy/search',
-    params
-  })
-}
+    url: "/api/vm-service/policy/search",
+    params,
+  });
+};
 
 /**
  *  删除策略
@@ -19,9 +19,9 @@ export const getPolicySearch = (params) => {
 export const removerePolicy = (policyId) => {
   return request({
     url: `/api/vm-service/policy/${policyId}`,
-    method: 'DELETE'
-  })
-}
+    method: "DELETE",
+  });
+};
 
 /**
  *  添加策略
@@ -30,11 +30,11 @@ export const removerePolicy = (policyId) => {
  */
 export const addPolicy = (data) => {
   return request({
-    url: '/api/vm-service/policy',
-    method: 'POST',
-    data
-  })
-}
+    url: "/api/vm-service/policy",
+    method: "POST",
+    data,
+  });
+};
 
 /**
  *  修改策略
@@ -44,7 +44,22 @@ export const addPolicy = (data) => {
 export const amendPolicy = (data, policyId) => {
   return request({
     url: `/api/vm-service/policy/${policyId}`,
-    method: 'PUT',
-    data
-  })
-}
+    method: "PUT",
+    data,
+  });
+};
+
+// 查询售货机策略
+export const queryMachineTacticsAPI = (innerCode) => {
+  return request({
+    url: "/api/vm-service/policy/vmPolicy/" + innerCode,
+  });
+};
+
+// 取消策略
+export const cancelTacticsAPI = (innerCode, policyId) => {
+  return request({
+    method: "PUT",
+    url: `/api/vm-service/vm/cancelPolicy/${innerCode}/${policyId}`,
+  });
+};
