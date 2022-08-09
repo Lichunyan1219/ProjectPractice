@@ -1,41 +1,47 @@
 <template>
   <el-form
     size="medium"
-    style="background-color:red"
     label-width="128px"
     highlight-current-row
   >
     <el-form-item>
       <template slot="label">
-        <span class="label-text"> 策略名称 </span>
+        <span class="label-text"> 策略名称: </span>
       </template>
-      <span>策略名称</span>
+      <span>{{ strategyitem.policyName }}</span>
     </el-form-item>
     <el-form-item>
       <template slot="label">
-        <span class="label-text"> 策略方案 </span>
+        <span class="label-text"> 策略方案: </span>
       </template>
       <el-table
+        v-loading="loading"
+        :header-cell-style="{
+          'background-color':'#fafafa'
+        }"
         :data="tableData"
         style="width: 100%"
+        :lazy="true"
+        empty-text="暂无数据"
+        type="index"
+        highlight-current-row
       >
         <el-table-column
-          prop="date"
-          label="日期"
-          width="180"
+          label="序号"
+          type="index"
+          :index="indexmethod"
         />
         <el-table-column
-          prop="name"
-          label="姓名"
-          width="180"
+          prop="nodeName"
+          label="点位名称"
         />
         <el-table-column
-          prop="address"
-          label="地址"
+          prop="innerCode"
+          label="设备编号"
         />
       </el-table>
 
-      <div v-if="judgepage" class="dataBtn">
+      <div v-if="Pag.totalCount > 10" class="dataBtn">
         <div class="Data">共{{ Pag.totalCount }}记录  第{{ Pag.pageIndex }}/{{ Pag.totalPage }}页</div>
         <lsButton ref="btn" title="上一页" :disable="disable" color="pag" @click="PreviousPage" />
         <lsButton title="下一页" :disable="disable1" color="pag" @click="NextPage" />
@@ -46,61 +52,72 @@
 
 <script>
 import lsButton from '@/components/ls-button'
+import { Strategiesdetails } from '@/api/strategy'
 export default {
-
   // 组件
   components: {
     lsButton
   },
+  props: {
+    visible: {
+      type: Boolean,
+      required: true
+    }
+  },
   // 数据
   data() {
     return {
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1517 弄'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
-      }],
+      searchFrom: {
+        pageIndex: 1
+      },
+      tableData: [], // 表格数据
       Pag: '',
-      disable1: false // 页脚禁用
+      disable1: false, // 页脚禁用
+      disable: false, //
+      loading: false, // 加载
+      strategyitem: {}// 策略
+
     }
   },
 
   // 计算属性
   computed: {
-    judgepage() {
-      return this
-    //   if (this.Pag.totalCount > 10) {
-    //     return true
-    //   } else {
-    //     return false
-    //   }
-    }
   },
 
   // 创建后
   created() {
-
+    // if (this.strategyitem.policyId) {
+    //   this.Strategiesdetails()
+    // } else {
+    //   this.$emit('update:visible', false) // 关闭
+    // }
   },
 
   // 函数
   methods: {
+    async  Strategiesdetails() {
+      this.loading = true
+      try {
+        const { data } = await Strategiesdetails(this.strategyitem.policyId, this.searchFrom)
+        this.tableData = data.currentPageRecords
+        this.Pag = data
+      } finally {
+        this.loading = false
+      }
+    },
+    getDetail(row) {
+      this.strategyitem = { ...row }
+      this.Strategiesdetails(row.policyId)
+    },
+    indexmethod(index) {
+      return this.Pag.pageIndex + index - 9
+    },
+    // 上一页
     NextPage() {
       if (this.searchFrom.pageIndex < this.Pag.totalPage) {
         this.searchFrom.pageIndex++
         this.disable = false
-        return this.PolicySearch()
+        return this.Strategiesdetails()
       }
       this.disable1 = true
     },
@@ -108,7 +125,7 @@ export default {
     PreviousPage() {
       if (this.searchFrom.pageIndex > 1) {
         this.searchFrom.pageIndex--
-        return this.PolicySearch()
+        return this.Strategiesdetails()
       }
       this.disable = true
     }
