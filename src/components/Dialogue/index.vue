@@ -41,7 +41,7 @@ export default {
   methods: {
     handleClose() {
       this.$emit('update:visible', false)
-    },
+    }
   }
 }
 </script>

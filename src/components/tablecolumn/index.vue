@@ -8,8 +8,7 @@
       :label="title"
       :type="type"
       :index="indexmethod"
-      ><slot />
-      <!-- <template slot-scope="scope" @click="list(scope.row)"></template> -->
+    ><slot />
     </el-table-column>
     <el-table-column
       v-if="img"
@@ -35,21 +34,21 @@ export default {
     // eslint-disable-next-line vue/require-default-prop
     title: {
       type: String,
-      required: false,
+      required: false
     },
     // eslint-disable-next-line vue/require-default-prop
     label: {
       type: String,
-      required: false,
+      required: false
     },
     // eslint-disable-next-line vue/require-default-prop
     type: {
       type: String,
-      required: false,
+      required: false
     },
     // eslint-disable-next-line vue/require-default-prop
     pag: {
-      type: String,
+      type: String
     },
     img: {
       type: Boolean,
@@ -57,7 +56,7 @@ export default {
     }
   },
   data() {
-    return {};
+    return {}
   },
   computed: {},
   watch: {},
@@ -67,9 +66,9 @@ export default {
   mounted() {},
   methods: {
     indexmethod(index) {
-      return this.pag + index - 9;
-    },
-  },
-};
+      return this.pag + index - 9
+    }
+  }
+}
 </script>
 <style scoped></style>

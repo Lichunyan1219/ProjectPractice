@@ -3,31 +3,10 @@
   <div>
     <!-- 头部 -->
     <div class="WorkOrder">
-
       <el-form v-model="searchFrom" class="title-from" label-width="80px" label-position="right">
         <search ref="search" title="工单搜索" :model.sync="searchFrom.taskCode" />
         <DropDown ref="DropDown" title="工单状态" :model.sync="searchFrom.status" :work="WorkOrderStatus" />
-        <el-form
-          v-model="searchFrom"
-          class="title-from"
-          label-width="80px"
-          label-position="right"
-        >
-          <search
-            ref="search"
-            title="工单搜索"
-            :model.sync="searchFrom.taskCode"
-          />
-          <DropDown
-            id="statusId"
-            ref="DropDown"
-            name="statusName"
-            title="工单状态"
-            :model.sync="searchFrom.status"
-            :work="WorkOrderStatus"
-          />
-          <lsButton @click="JobSearch" />
-        </el-form>
+        <lsButton @click="JobSearch" />
       </el-form></div>
     <div>
       <!-- 添加按钮 -->
@@ -174,8 +153,9 @@ export default {
     },
     // 获取工单状态
     async getWorkOrderStatus() {
-      const { data } = await getWorkOrderStatus()
-      this.WorkOrderStatus = data
+      const { data } = await getWorkOrderStatus();
+      this.WorkOrderStatus = data;
+      console.log(data);
     },
     // 上一页
     NextPage() {
