@@ -10,6 +10,8 @@
         <div class="csose3">负责区域：阿萨德</div>
       </div>
 
+      
+
       <!-- 列表 -->
       <el-table style="width: 100%" :lazy="true" type="index">
         <Tablecolumn title="人员名称" />
@@ -24,6 +26,7 @@
 
 <script>
 import Tablecolumn from '@/components/tablecolumn' // 列表
+import { getUserIdApi } from '@/api/essential'
 export default {
 
   components: {
@@ -40,12 +43,19 @@ export default {
     return {}
   },
 
-  created() {},
+  created() {
+    // this.getUserIdApi()
+  },
 
   methods: {
     onClose() {
       this.$emit('update:visible', false)
-    }
+    },
+
+    // async getUserIdApi () {
+    //   const res = await getUserIdApi()
+    //   console.log(res);
+    // }
   }
 }
 </script>

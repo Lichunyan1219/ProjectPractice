@@ -14,19 +14,21 @@
           <template slot="label">
             <span class="label-text"> 订单编号： </span>
           </template>
-          <el-input v-model="searchFrom.user" placeholder="请输入订单编号" />
+          <el-input v-model="searchFrom.orderNo" placeholder="请输入订单编号" />
         </el-form-item>
         <el-form-item>
           <template slot="label">
             <span class="label-text"> 选择日期： </span>
           </template>
           <el-date-picker
-            v-model="searchFrom.rei"
+            v-model="timequantum"
             type="daterange"
-            range-separator="至"
+            range-separator="~"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             locale="locale"
+            format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd"
           />
         </el-form-item>
         <el-form-item>
@@ -42,133 +44,179 @@
     <body>
       <div class="Strategy-main">
         <el-table
+          v-loading="loading"
+          :header-cell-style="{
+            'background-color':'#fafafa'
+          }"
           :data="tableData"
           style="width: 100%"
           :lazy="true"
           empty-text="暂无数据"
           type="index"
+          highlight-current-row
         >
-          <tableColumn title="操作">
-            <el-button type="text">文字按钮</el-button>
-            <el-button type="text">按钮</el-button>
-            <el-button type="text">按钮</el-button>
-          </tableColumn>
-          <tableColumn title="序号" type="index" pag="1" />
-          <tableColumn title="策略名称" label="policyName" />
-          <tableColumn title="策略方案" label="discount" />
-          <tableColumn title="创建日期" label="createTime" />
+          <el-table-column
+            label="序号"
+            type="index"
+            :index="indexmethod"
+          />
+          <el-table-column
+            label="订单编号"
+          >
+            <template slot-scope="scope">
+              <div class="orderNo">
+                {{ scope.row.orderNo }}
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="skuName"
+            label="商品名称"
+          />
+          <el-table-column
+            prop="amount"
+            label="订单金额(元)"
+          />
+          <el-table-column
+            prop="innerCode"
+            label="设备编号"
+          />
+          <el-table-column
+            prop="status"
+            label="订单状态"
+          >
+            <template slot-scope="scope">
+              <span v-if="scope.row.status === 0">未支付</span>
+              <span v-if="scope.row.status === 1">支付完成</span>
+              <span v-if="scope.row.status === 2">出货成功</span>
+              <span v-if="scope.row.status === 3">出货失败</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="createTime"
+            label="商品日期"
+          />
+          <el-table-column label="操作">
+            <template slot-scope="scope">
+              <el-button type="text" @click="lookDetails(scope.row)">查看详情</el-button>
+            </template>
+          </el-table-column>
         </el-table>
-        <div class="dataBtn">
-          <div class="Data">共30记录 第4/30页</div>
-          <lsButton
-            ref="btn"
-            title="上一页"
-            :disable="disable"
-            color="pag"
-            @click="PreviousPage"
-          />
-          <lsButton
-            title="下一页"
-            :disable="disable1"
-            color="pag"
-            @click="NextPage"
-          />
+
+        <div v-if="Pag.totalCount > 10" class="dataBtn">
+          <div class="Data">共{{ Pag.totalCount }}记录  第{{ Pag.pageIndex }}/{{ Pag.totalPage }}页</div>
+          <lsButton ref="btn" title="上一页" :disable="disable" color="pag" @click="PreviousPage" />
+          <lsButton title="下一页" :disable="disable1" color="pag" @click="NextPage" />
         </div>
       </div>
     </body>
+    <el-dialog
+      title="订单详情"
+      :visible="visible"
+      width="630px"
+      :before-close="()=>{ visible = false}"
+    >
+      <keep-alive>
+        <Detailsofpopups ref="Detailsofpopups" />
+      </keep-alive>
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
+import { getIndentSearch } from '@/api/strategy'
 import lsButton from '@/components/ls-button'
-import tableColumn from '@/components/tablecolumn'
+import moment from 'moment' // 处理时间
+import Detailsofpopups from './components/Detailsofpopups'
 export default {
   components: {
     lsButton,
-    tableColumn
+    Detailsofpopups
   },
   data() {
     return {
-      formInline: {},
       searchFrom: {
-        user: '',
-        rei: ''
-      },
-      WorkOrderList: [],
-      pag: '', // 分页数据
-      pageIndex: 1,
-      disable: true,
-      disable1: false,
+        pageIndex: 1,
+        orderNo: '',
+        startDate: '',
+        endDate: ''
+      }, // 搜索
       tableData: [
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1518 弄',
-          zip: 200333
-        },
-        {
-          date: '2016-05-04',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1517 弄',
-          zip: 200333
-        },
-        {
-          date: '2016-05-01',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1519 弄',
-          zip: 200333
-        },
-        {
-          date: '2016-05-03',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1516 弄',
-          zip: 200333
-        }
-      ]
+      ], // 表格数据
+      moment, // 处理时间
+      Pag: '', // 分页数据
+      disable1: false, // 页脚禁用
+      disable: false, //
+      loading: false, // 加载
+      timequantum: [], // 时间段
+      visible: false // 弹层开关
     }
   },
-  computed: {},
+  computed: {
+  },
   watch: {},
   // 生命周期 - 创建完成（可以访问当前this实例）
   created() {
-    // this.TaskSearch()
+    this.PolicySearch()
   },
   // 生命周期 - 挂载完成（可以访问DOM元素）
   mounted() {},
   methods: {
-    async TaskSearch() {
+    // 获取数据
+    async PolicySearch() {
+      this.loading = true
       try {
-        const { data } = await // this.tableData = data.currentPageRecords
-        console.log(1, data)
-      } catch (error) {
-        // jj
+        const { data } = await getIndentSearch(this.searchFrom)
+        const workList = await this.ProcessingWorkOrderStatus(data.currentPageRecords)
+        this.tableData = workList
+        this.Pag = data
+      } finally {
+        this.loading = false
       }
     },
-    onSubmit() {
-      console.log(this.searchFrom)
+    // 搜索
+    async onSubmit() {
+      await this.timedisposal()
+      await this.PolicySearch()
+    },
+    // 时间处理
+    timedisposal() {
+      this.searchFrom.endDate = this.timequantum[1]
+      this.searchFrom.startDate = this.timequantum[0]
+    },
+    lookDetails(row) {
+      this.visible = true
+      this.$nextTick(() => {
+        this.$refs.Detailsofpopups.getDetail(row)
+      })
+    },
+    // 处理工单状态
+    ProcessingWorkOrderStatus(data) {
+      data.forEach(ele => {
+        ele.createTime = this.moment(ele.createTime).utcOffset(8).format('YYYY.MM.DD HH:mm:ss')
+        ele.amount = (ele.amount / 100).toFixed(2)
+      })
+      return data
+    },
+    // 序号
+    indexmethod(index) {
+      return this.Pag.pageIndex + index - 9
     },
     // 上一页
     NextPage() {
-      if (this.pageIndex < this.Pag.totalPage) {
-        this.pageIndex++
+      if (this.searchFrom.pageIndex < this.Pag.totalPage) {
+        this.searchFrom.pageIndex++
         this.disable = false
-        return this.getWorkOrderList()
+        return this.PolicySearch()
       }
       this.disable1 = true
     },
     // 下一页
     PreviousPage() {
-      if (this.pageIndex > 1) {
-        this.pageIndex--
-        return this.getWorkOrderList()
+      if (this.searchFrom.pageIndex > 1) {
+        this.searchFrom.pageIndex--
+        return this.PolicySearch()
       }
       this.disable = true
     }
@@ -220,7 +268,12 @@ export default {
         margin: 0;
       }
     }
+    .orderNo{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    }
   }
+
   // 页码
   .dataBtn {
     display: flex;

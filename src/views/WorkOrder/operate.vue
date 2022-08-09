@@ -156,8 +156,9 @@ export default {
     },
     // 获取工单状态
     async getWorkOrderStatus() {
-      const { data } = await getWorkOrderStatus()
-      this.WorkOrderStatus = data
+      const { data } = await getWorkOrderStatus();
+      this.WorkOrderStatus = data;
+      console.log(data);
     },
     // 上一页
     NextPage() {

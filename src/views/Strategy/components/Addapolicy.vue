@@ -1,38 +1,29 @@
 <template>
-  <el-dialog
-    :title="showTitle"
-    :visible="visible"
-    width="630px"
-    :before-close="btnCancel"
-    :center="false"
-  >
-    <div>
-      <el-form ref="ruleForm" size="medium" :rules="rules" :model="ruleForm" status-icon label-width="140px" class="demo-ruleForm">
-        <el-form-item label="策略名称" prop="policyName">
-          <el-input
-            v-model="ruleForm.policyName"
-            style="width:400px"
-            type="text"
-            placeholder="请输入"
-            maxlength="15"
-            show-word-limit
-          /></el-form-item>
-        <el-form-item label="策略方案" prop="discount">
-          <el-input-number v-model="ruleForm.discount" style="width:400px" controls-position="right" :min="undefined" :max="90" />
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="btnCancel">取 消</el-button>
-        <el-button type="primary" @click="btnOK">确 定</el-button>
-      </span>
-    </div>
-  </el-dialog>
+  <div>
+    <el-form ref="ruleForm" size="medium" :rules="rules" :model="ruleForm" status-icon label-width="140px" class="demo-ruleForm">
+      <el-form-item label="策略名称" prop="policyName">
+        <el-input
+          v-model="ruleForm.policyName"
+          style="width:400px"
+          type="text"
+          placeholder="请输入"
+          maxlength="15"
+          show-word-limit
+        /></el-form-item>
+      <el-form-item label="策略方案" prop="discount">
+        <el-input-number v-model="ruleForm.discount" style="width:400px" controls-position="right" :min="undefined" :max="90" />
+      </el-form-item>
+    </el-form>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="btnCancel">取 消</el-button>
+      <el-button type="primary" @click="btnOK">确 定</el-button>
+    </span>
+  </div>
 </template>
 
 <script>
 import { addPolicy, amendPolicy } from '@/api/strategy'
 export default {
-
   // 组件
   components: {
 
@@ -64,12 +55,6 @@ export default {
       policyId: ''
     }
   },
-  // 计算属性
-  computed: {
-    showTitle() {
-      return this.policyId === '' ? '新增策略' : '修改策略'
-    }
-  },
 
   // 创建后
   created() {
@@ -88,7 +73,6 @@ export default {
           } else {
             arr = await amendPolicy(this.ruleForm, this.policyId)
           }
-          console.log(arr.data)
           if (arr.data) {
             this.ruleForm = {
               policyName: '',
@@ -120,5 +104,8 @@ export default {
 </script>
 
 <style scoped>
-
+.dialog-footer{
+    display: flex;
+    justify-content: center
+}
 </style>

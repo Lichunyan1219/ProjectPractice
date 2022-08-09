@@ -2,13 +2,76 @@
 <template>
   <div class="app-main">
     <div class="app-main-operation">
-      <div class="app-main-operation-1 app-operatin">1111</div>
-      <div class="app-main-operation-1 app-ation">1111</div>
+      <div class="app-main-operation-1 app-operatin">
+        <div class="app-main-operation-2">运营人员（当天）</div>
+
+        <el-row :gutter="20">
+          <el-col :span="6">
+            <div class="grid-content bg-purple">
+              <div class="grid-1">23</div>
+              <div class="grid-2">工单总数（个）</div>
+            </div>
+          </el-col>
+          <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
+          <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
+          <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
+        </el-row>
+      </div>
+      <div class="app-main-operation-1 app-ation">
+        <div class="app-main-operation-2">运营人员（当天）</div>
+
+        <el-row :gutter="20">
+          <el-col :span="6">
+            <div class="grid-content bg-purple">
+              <div class="grid-1">23</div>
+              <div class="grid-2">工单总数（个）</div>
+            </div>
+          </el-col>
+          <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
+          <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
+          <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
+        </el-row>
+      </div>
     </div>
 
     <div class="app-main-details">
-      <div class="app-main-details-state">1111</div>
-      <div class="app-main-details-ranking">1111</div>
+      <div class="app-main-details-1 app-main-details-state">
+        <div class="app-message">
+          <div class="app-state">工单状态</div>
+
+          <div class="app-time">
+            <div class="block">
+              <el-date-picker
+                size="mini"
+                v-model="value1"
+                type="daterange"
+                range-separator="~"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+              >
+              </el-date-picker>
+            </div>
+          </div>
+
+          <div class="app-date">
+            <div class="date-item">周</div>
+            <div class="date-item">月</div>
+            <div class="date-item">年</div>
+          </div>
+        </div>
+
+        <div class="app-imgs">
+          
+          <div class="app-imgs1">
+            <img
+              src="http://likede2-admin.itheima.net/img/empty.87c4f71b.png"
+              alt=""
+            />
+            <div>暂无数据</div>
+          </div>
+        </div>
+      </div>
+      <div class="app-main-details-1 app-main-details-ranking">1111</div>
     </div>
   </div>
 </template>
@@ -16,7 +79,9 @@
 <script>
 export default {
   data() {
-    return {}
+    return {
+      value1: "",
+    };
   },
   computed: {},
   watch: {},
@@ -24,25 +89,24 @@ export default {
   created() {},
   // 生命周期 - 挂载完成（可以访问DOM元素）
   mounted() {},
-  methods: {}
-}
+  methods: {},
+};
 </script>
 <style scoped lang="scss">
 .app-main {
-  /* background-color: rgb(204, 28, 28); */
   padding: 20px;
   .app-main-operation {
     margin-left: -10px;
     margin-right: -10px;
-    // background-color: rgb(20, 16, 16);
+    position: relative;
     display: flex;
     .app-main-operation-1 {
-      // background-color: rgb(107, 32, 32);
       width: 50%;
       position: relative;
       min-height: 166px;
       padding-left: 10px;
       padding-right: 10px;
+      border-radius: 15px;
       flex-direction: column;
     }
     .app-operatin {
@@ -52,23 +116,144 @@ export default {
       background-repeat: no-repeat, no-repeat;
       background-position: 0 0, calc(100% - 12px) 100%;
     }
+    .app-main-operation-2 {
+      // background-color: #fff;
+      margin-top: 18px;
+    }
     .app-ation {
       // background-color: rgb(21, 255, 0);
       background: #fbefe8
         url(http://likede2-admin.itheima.net/img/operation.4120cc58.png)
         no-repeat calc(100% - 12px) 100%;
     }
+
+    .el-row {
+      margin-bottom: 20px;
+      &:last-child {
+        margin-bottom: 10px;
+        margin-top: 20px;
+      }
+    }
+    .el-col {
+      border-radius: 4px;
+    }
+    .bg-purple-dark {
+      background: #99a9bf;
+    }
+    .bg-purple-light {
+      background: #e5e9f2;
+    }
+    .grid-content {
+      border-radius: 4px;
+      min-height: 85px;
+      flex-direction: column;
+    }
+    .row-bg {
+      padding: 10px 0;
+      background-color: #f9fafc;
+    }
+    .grid-1 {
+      color: #072074;
+      text-shadow: 2px 4px 7pxrgba (85, 132, 255, 0.5);
+      height: 50px;
+      font-size: 36px;
+      font-family: PingFangSC-Semibold, PingFang SC;
+      font-weight: 600;
+      line-height: 50px;
+      text-align: center;
+    }
+    .grid-2 {
+      color: #91a7dc;
+      height: 17px;
+      margin-top: 3px;
+      font-size: 12px;
+      font-family: PingFangSC-Regular, PingFang SC;
+      font-weight: 400;
+      line-height: 17px;
+      // margin-left: 5px;
+      text-align: center;
+    }
   }
   .app-main-details {
     margin-left: -10px;
     margin-right: -10px;
     display: flex;
-    background-color: rgb(100, 55, 55);
-    .app-main-details-state {
+    // background-color: rgb(100, 55, 55);
+    .app-main-details-1 {
       padding-left: 10px;
       padding-right: 10px;
+      height: calc(75vh - 90px);
+      min-height: 542px;
+      border-radius: 15px;
+      margin-top: 20px;
+    }
+    .app-main-details-state {
       width: 75%;
-      background-color: rgb(255, 0, 0);
+      // background-color: rgb(255, 0, 0);
+      flex-direction: column;
+      background: rgb(255, 255, 255);
+      .app-message {
+        display: flex;
+        align-items: center;
+        height: 32px;
+        margin-top: 10px;
+        .app-state {
+          // background-color: rgb(5, 5, 5);
+          flex: 1;
+          font-size: 16px;
+          font-weight: 600;
+          color: #333;
+        }
+        .app-time {
+          // background-color: rgb(255, 0, 0);
+          width: 230px;
+          margin-right: 21px;
+          .el-input__inner {
+            width: 230px;
+            margin-right: 21px;
+          }
+        }
+        .app-date {
+          background-color: rgb(0, 255, 0);
+          width: 129px;
+          height: 34px;
+          background: rgba(233, 243, 255, 0.37);
+          border-radius: 10px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          .date-item {
+            width: 37px;
+            // cursor: pointer;
+            // height: 25px;
+            font-size: 14px;
+            color: #9ca3b4;
+          }
+        }
+        .app-imgs {
+          height: 100%;
+          width: 100%;
+          // position: absolute;
+          user-select: none;
+          // background-color: rgb(255, 0, 0);
+          
+          .app-imgs1 {
+            position: absolute;
+            top: 130px;
+            margin-top: 130px;
+            left: 150px;
+            // display: flex;
+            // justify-content: center;
+            // width: 100%;
+            // height: 100%;
+          }
+        }
+      }
+    }
+    .app-main-details-ranking {
+      width: 25%;
+      flex-direction: column;
+      background: rgb(255, 25, 25);
     }
   }
 }

@@ -11,9 +11,9 @@
       >
         <Search
           ref="search"
-          title="人员搜索："
+          title="人员搜索"
           class="title-searchs"
-          :model.sync="searchFrom.taskCode"
+          :model.sync="searchFrom.userName"
         />
         <LsButton title="查询" icon="el-icon-search" @click="JobSearch" />
       </el-form>
@@ -26,6 +26,7 @@
         icon="el-icon-circle-plus-outline"
         color="addBtn"
         title="新建"
+        @click="redact"
       />
       <!-- 新建 -->
 
@@ -39,7 +40,7 @@
       >
         <Tablecolumn title="操作">
           <el-button type="text" @click="redact">编辑</el-button>
-          <el-button type="text" class="el-button1">删除</el-button>
+          <el-button type="text" class="el-button1" @click="onRemove">删除</el-button>
         </Tablecolumn>
         <Tablecolumn
           title="序号"
@@ -55,7 +56,7 @@
       <!-- 页码 -->
       <div class="dataBtn">
         <div class="Data">
-          共{{ page.totalCount }}记录 第{{ page.pageIndex }}/{{
+          共{{ page.totalCount }}记录 第{{ searchFrom.pageIndex }}/{{
             page.totalPage
           }}页
         </div>
@@ -79,11 +80,11 @@
 </template>
 
 <script>
-import LsButton from '@/components/ls-button' // 按钮
-import Search from '@/components/search' // 输入框
-import Tablecolumn from '@/components/tablecolumn' // 列表
-import Information from './components/information.vue'
-import { getSearchApi } from '@/api/essential'
+import LsButton from "@/components/ls-button"; //按钮
+import Search from "@/components/search"; //输入框
+import Tablecolumn from "@/components/tablecolumn"; //列表
+import Information from "./components/information.vue";
+import { getSearchApi, deleteUserIDApi } from "@/api/essential";
 export default {
   components: {
     LsButton,
@@ -94,18 +95,22 @@ export default {
   data() {
     return {
       page: {},
-      pageIndex: 1,
       listste: [],
-      WorkOrderList: [],
       disable: true,
       disable1: false,
       dialogVisible: false,
-      searchFrom: {
-        // 搜索表单数据
-        status: '',
-        taskCode: ''
-      }
-    }
+      searchFrom: {// 搜索表单数据
+         pageIndex: 1,
+         userName: ''
+      },
+        
+    };
+  },
+  components: {
+    LsButton,
+    Search,
+    Tablecolumn,
+    Information,
   },
   computed: {},
   watch: {},
@@ -118,23 +123,16 @@ export default {
   methods: {
     // 获取列表
     async getUserId() {
-      const { data } = await getSearchApi({
-        pageIndex: this.pageIndex,
-        ...this.searchFrom,
-        isRepair: false
-      })
-      this.page = data
+      const { data } = await getSearchApi(this.searchFrom);
       this.listste = data.currentPageRecords
-      // console.log(data);
-      const workList = await data.currentPageRecords
-      this.WorkOrderList = workList
-      this.page = data
+    //   console.log(data);
+    // console.log(this.searchFrom);
+      this.page = data;
     },
     // 下一页
     NextPage() {
-      // console.log(12);
-      if (this.pageIndex < this.page.totalPage) {
-        this.pageIndex++
+      if (this.searchFrom.pageIndex < this.page.totalPage) {
+        this.searchFrom.pageIndex++
         this.disable = false
         return this.getUserId()
       }
@@ -142,8 +140,8 @@ export default {
     },
     // 上一页
     PreviousPage() {
-      if (this.pageIndex > 1) {
-        this.pageIndex--
+      if (this.searchFrom.pageIndex > 1) {
+        this.searchFrom.pageIndex--
         return this.getUserId()
       }
       this.disable = true
@@ -151,14 +149,33 @@ export default {
 
     // 搜索
     async JobSearch() {
-      this.getUserId()
-      console.log(this.$refs.search)
+      this.searchFrom.pageIndex = 1
+      await this.getUserId()
     },
     redact() {
-      this.dialogVisible = true
+      this.dialogVisible = true;
+    },
+
+    // 删除
+    async onRemove () {
+      // console.log(this.listste);
+      try {
+        await this.$confirm('此操作将永久删除该人员, 是否继续?', '提示', {
+          confirmButtonText: '删除',
+          cancelButtonText: '取消',
+          type: 'warning',
+        })
+        await deleteUserIDApi(this.listste.id)
+        this.getUserId()
+        this.$message.success('删除成功')
+        // this.$emit('text')
+        console.log(this.listste.id);
+      } catch (error) {
+        console.log(error);
+      }
     }
-  }
-}
+  },
+};
 </script>
 <style scoped lang="scss">
 .WorkOrder {

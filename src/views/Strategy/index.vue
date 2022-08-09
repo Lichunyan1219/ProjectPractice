@@ -31,10 +31,20 @@
         <lsButton icon="el-icon-circle-plus-outline" color="addBtn" title="新建" @click="addBtn" />
       </div>
       <div class="Strategy-main">
-        <el-table :data="tableData" style="width: 100%" :lazy="true" empty-text="暂无数据" type="index" highlight-current-row>
+        <el-table
+          :header-cell-style="{
+            'background-color':'#fafafa'
+          }"
+          :data="tableData"
+          style="width: 100%"
+          :lazy="true"
+          empty-text="暂无数据"
+          type="index"
+          highlight-current-row
+        >
           <el-table-column label="操作">
             <template slot-scope="scope">
-              <el-button type="text">查看详情</el-button>
+              <el-button type="text" @click="lookDetails(scope.row)">查看详情</el-button>
               <el-button
                 type="text"
                 @click="handleEdit(scope.row)"
@@ -46,7 +56,7 @@
               >删除</el-button>
             </template>
           </el-table-column>
-          <tableColumn title="序号" type="index" :pag=" Pag.pageIndex" />
+          <tableColumn title="序号" type="index" :pag="Pag.pageIndex" />
           <tableColumn title="策略名称" label="policyName" />
           <tableColumn title="策略方案" label="discount" />
           <tableColumn title="创建日期" label="createTime" />
@@ -58,8 +68,17 @@
         </div>
       </div>
     </body>
-    <Addapolicy ref="Addapolicy" :visible.sync="visible" @refresh="PolicySearch" />
-    <TacticsDetails />
+    <el-dialog
+      :title="showTitle"
+      :visible="visible"
+      width="630px"
+      :before-close="()=>{ visible = false}"
+    >
+      <keep-alive>
+        <component :is="Switchcomponents" ref="Addapolicy" :visible.sync="visible" @refresh="PolicySearch" />
+      </keep-alive>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -91,7 +110,9 @@ export default {
       disable1: false, // 页脚禁用
       loading: false, // 加载
       visible: false, // 弹出层
-      row: {} // 当前项
+      showTitle: '', // 弹出层标题
+      center: true, // 弹出层按钮居中
+      Switchcomponents: 'Addapolicy' // 组件切换
     }
   },
   computed: {
@@ -133,7 +154,6 @@ export default {
     },
     // 删除策略
     async clickremoverePolicy(row) {
-      console.log(row.policyId)
       try {
         await removerePolicy(row.policyId)
         this.PolicySearch()
@@ -142,13 +162,28 @@ export default {
       }
     },
     // 修改
-    handleEdit(row) {
-      this.$refs.Addapolicy.getDetail(row)
+    async handleEdit(row) {
       this.visible = true
+      this.Switchcomponents = 'Addapolicy'
+      this.showTitle = '修改策略'
+      this.$nextTick(() => {
+        this.$refs.Addapolicy.getDetail(row)
+      })
     },
     // 添加
     addBtn(row) {
+      this.Switchcomponents = 'Addapolicy'
+      this.showTitle = '新增策略'
       this.visible = true
+    },
+    // 详情
+    lookDetails(row) {
+      this.Switchcomponents = 'TacticsDetails'
+      this.showTitle = '策略详情'
+      this.visible = true
+      this.$nextTick(() => {
+        this.$refs.Addapolicy.getDetail(row)
+      })
     },
     // 上一页
     NextPage() {
