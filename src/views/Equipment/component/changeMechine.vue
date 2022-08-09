@@ -109,7 +109,9 @@ export default {
   methods: {
     // 处理图片上传
     async handleAvatarSuccess(file) {
+      console.log(file.file);
       const formData = new FormData();
+      console.log(formData);
       formData.append("fileName", file.file);
       const { data } = await getPhoto(formData);
       console.log(data);

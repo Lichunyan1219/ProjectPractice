@@ -144,7 +144,7 @@ export default {
       await this.getMachineTypeList();
       this.$message.success("修改设备类型成功");
       this.currentMachine = {};
-    },
+    }, 
     // 删除设备类型
     async delMachine(val) {
       try {

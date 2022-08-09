@@ -10,7 +10,7 @@
         <el-table-column type="index" :index="indexMethod" label="序号" />
         <el-table-column prop="innerCode" label="设备编号" />
         <el-table-column prop="type.name" label="设备型号" />
-        <el-table-column prop="node.name" label="详细地址" />
+        <el-table-column prop="node.name" label="详细地址"> </el-table-column>
         <el-table-column prop="vmStatus" label="运营状态">
           <template slot-scope="scope">
             {{ { 0: "未投放", 1: "运营", 3: "撤机" }[scope.row.vmStatus] }}
@@ -42,20 +42,18 @@
         </el-table-column>
         <el-table-column prop="address" label="操作">
           <template slot-scope="scope">
-            <el-button
-              type="text"
-              size="small"
-              @click="details(scope.row)"
-            >查看详情</el-button>
+            <el-button type="text" size="small" @click="details(scope.row)"
+              >查看详情</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
       <Dialog title="设备详情" :visible.sync="visible">
-        <el-row type="flex" justify="space-around" align="middle">
-          <el-col>销售量：</el-col>
-          <el-col>销售额：</el-col>
-          <el-col>补货次数：{{ supplyNum }}次</el-col>
-          <el-col>维修次数：{{ fixNum }}次</el-col>
+        <el-row  justify="space-around" align="middle">
+          <el-col :span="6">销售量：{{ allOrderCount }}</el-col>
+          <el-col :span="7">销售额：{{ allorderAmount }}</el-col>
+          <el-col :span="5">补货次数：{{ supplyNum }}次</el-col>
+          <el-col :span="6">维修次数：{{ fixNum }}次</el-col>
         </el-row>
         <div class="mid-title">商品销量（月）</div>
         <el-row>
@@ -83,13 +81,13 @@
         <Button
           color="#d5ddf8"
           title="上一页"
-          :disabled="disabled"
+          :disable="disabled"
           @click="lastPage"
         />
         <Button
           color="#d5ddf8"
           title="下一页"
-          :disabled="disabled2"
+          :disable="disabled2"
           @click="nextPage"
         />
       </div>
@@ -98,130 +96,159 @@
 </template>
 
 <script>
-import StateTop from './component/state-top.vue'
-import Button from '@/components/ls-button'
-import Dialog from '@/components/Dialogue'
+import StateTop from "./component/state-top.vue";
+import Button from "@/components/ls-button";
+import Dialog from "@/components/Dialogue";
 import {
   getmachineList,
   getGoodsSales,
   getFixNum,
-  getsupplyNum
-} from '@/api/machine'
+  getsupplyNum,
+} from "@/api/machine";
+import { getOrderCount, getorderAmount } from "@/api/reckoning";
 export default {
   components: { Button, Dialog, StateTop },
   data() {
     return {
       tableData: [
         {
-          innerCode: '',
-          type: '',
-          node: '',
-          vmStatus: '',
-          status: ''
-        }
+          innerCode: "",
+          type: "",
+          node: "",
+          vmStatus: "",
+          status: "",
+        },
       ],
       goodsSalesList: [],
-      fixNum: '',
-      supplyNum: '',
+      allOrderCount: "",
+      allorderAmount: "",
+      fixNum: "",
+      supplyNum: "",
       pageInfo: {},
       page: 1,
       visible: false,
       disabled: false,
-      disabled2: false
-    }
+      disabled2: false,
+    };
   },
   created() {
-    this.getmachineList()
+    this.getmachineList();
   },
   methods: {
     // 查询设备编号
     async query(code) {
-      console.log(code)
+      console.log(code);
       const res = await getmachineList({
-        innerCode: code
-      })
-      this.pageInfo = res.data
-      console.log(res.data)
-      this.tableData = res.data.currentPageRecords
+        innerCode: code,
+      });
+      this.pageInfo = res.data;
+      console.log(res.data);
+      this.tableData = res.data.currentPageRecords;
     },
     // 弹出框
     details(val) {
-      this.visible = true
-      this.getGoodsSales(val)
-      this.getFixNum(val)
-      this.getsupplyNum(val)
+      this.visible = true;
+      this.getGoodsSales(val);
+      this.getFixNum(val);
+      this.getsupplyNum(val);
+      this.getOrderCount(val);
+      this.getorderAmount(val);
       // console.log(val);
     },
     // 页码
     indexMethod(index) {
-      return index + 1 + 10 * (this.page - 1)
+      return index + 1 + 10 * (this.page - 1);
     },
     // 获取售货机列表
     async getmachineList() {
       const { data } = await getmachineList({
-        pageIndex: this.page
-      })
+        pageIndex: this.page,
+      });
       // console.log(data.currentPageRecords);
-      this.pageInfo = data
-      this.tableData = data.currentPageRecords
+      this.pageInfo = data;
+      this.tableData = data.currentPageRecords;
     },
     // 上一页
     lastPage() {
-      if (this.page < 2) {
-        this.disabled = true
-        return
+      if (this.page <= 1) {
+        this.page = 1;
+        this.disabled = true;
+      } else {
+        this.page--;
+        console.log(this.page);
+        this.disabled2 = false;
+        this.getmachineList();
       }
-      this.disabled = false
-      this.page--
-      this.getmachineList()
     },
     // 下一页
     nextPage() {
       if (this.page >= this.pageInfo.totalPage) {
-        this.page = this.pageInfo.totalPage
-        this.disabled2 = true
-        return
+        this.page = this.pageInfo.totalPage;
+        this.disabled2 = true;
+      } else {
+        this.disabled = false;
+        this.page++;
+        console.log(this.page);
+        this.getmachineList();
       }
-      this.disabled2 = false
-      this.page++
-      this.getmachineList()
     },
     // 获取售货机商品销量
     async getGoodsSales(val) {
-      const startTime = val.createTime.substr(0, 10)
-      const endTime = this.dayjs().format('YYYY-MM-DD')
+      const startTime = val.createTime.substr(0, 10);
+      const endTime = this.dayjs().format("YYYY-MM-DD");
       const res = await getGoodsSales(val.innerCode, startTime, endTime, {
         vmType: val.type.typeId,
         nodeId: val.region.id,
-        createUserId: val.node.createUserId
-      })
+        createUserId: val.node.createUserId,
+      });
       // console.log(res.data);
-      this.goodsSalesList = res.data
+      this.goodsSalesList = res.data;
     },
     // 获取售货机维修次数
     async getFixNum(val) {
-      const startTime = val.createTime.substr(0, 10)
-      const endTime = this.dayjs().format('YYYY-MM-DD')
+      const startTime = val.createTime.substr(0, 10);
+      const endTime = this.dayjs().format("YYYY-MM-DD");
       const res = await getFixNum(val.innerCode, startTime, endTime, {
         vmType: val.type.typeId,
         nodeId: val.region.id,
-        createUserId: val.node.createUserId
-      })
-      this.fixNum = res.data
+        createUserId: val.node.createUserId,
+      });
+      this.fixNum = res.data;
     },
     // 获取售货机补货次数
     async getsupplyNum(val) {
-      const startTime = val.createTime.substr(0, 10)
-      const endTime = this.dayjs().format('YYYY-MM-DD')
+      const startTime = val.createTime.substr(0, 10);
+      const endTime = this.dayjs().format("YYYY-MM-DD");
       const res = await getsupplyNum(val.innerCode, startTime, endTime, {
         vmType: val.type.typeId,
         nodeId: val.region.id,
-        createUserId: val.node.createUserId
-      })
-      this.supplyNum = res.data
-    }
-  }
-}
+        createUserId: val.node.createUserId,
+      });
+      this.supplyNum = res.data;
+    },
+    // 获取订单总数
+    async getOrderCount(val) {
+      const startTime = val.createTime.replace("T", " ");
+      const endTime = this.dayjs().format("YYYY-MM-DD hh:mm:ss");
+      const res = await getOrderCount({
+        start: startTime,
+        end: endTime,
+        innerCode: val.innerCode,
+      });
+      this.allOrderCount = res.data;
+    },
+    async getorderAmount(val) {
+      const startTime = val.createTime.replace("T", " ");
+      const endTime = this.dayjs().format("YYYY-MM-DD hh:mm:ss");
+      const res = await getorderAmount({
+        start: startTime,
+        end: endTime,
+        innerCode: val.innerCode,
+      });
+      this.allorderAmount = res.data;
+    },
+  },
+};
 </script>
 <style scoped lang="scss">
 .main {
@@ -259,6 +286,9 @@ export default {
     border: 1px solid #ccc;
     .left {
       width: 60%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   }
 }
