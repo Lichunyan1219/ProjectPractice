@@ -79,7 +79,7 @@ export default {
       WorkOrderList: [], // 工单列表数据 // 工单列表数据
       Pag: '', // 分页数据
       pageIndex: 1,
-      disable: true,
+      disable: false,
       disable1: false,
       status: '',
       taskCode: '',

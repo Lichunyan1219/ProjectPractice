@@ -12,9 +12,12 @@
     <div>
       <!-- 添加按钮 -->
       <lsButton icon="el-icon-circle-plus-outline" color="addBtn" title="新建" @click="AddWorkOrder" />
-      <lsButton title="工单配置" color="config" />
+      <lsButton title="工单配置" color="config" @click="GetWorkOrderAlert" />
       <el-table :data="WorkOrderList" style="width: 100%" :lazy="true" empty-text="暂无数据" type="index">
-        <tableColumn title="操作" label="查看详情">查看详情</tableColumn>
+        <el-table-column
+          label="操作"
+        >
+          <template slot-scope="scope"><el-button type="text" @click="ViewDetails(scope)">查看详情</el-button></template></el-table-column>
         <tableColumn title="序号" type="index" :pag=" Pag.pageIndex" />
         <tableColumn title="工单编号" label="taskCode" />
         <tableColumn title="设备编号" label="innerCode" />
@@ -32,35 +35,27 @@
     </div>
     <!--  新增弹窗 -->
     <Dialogue title="添加工单" :visible.sync="visible">
-      <el-form ref="form" class="el-input" label-width="80px" label-position="right">
-        <!-- 设备编号 -->
-        <search ref="search" title="设备编号" />
-        <!-- 工单类型 -->
-        <DropDown ref="DropDown" :work="WorkOrderTypeList" title="工单类型" />
-        <el-form-item label="补货数量">
-          <span class="BackOrder"> <i class="el-icon-document" /> <span>补货清单</span></span>
-        </el-form-item>
-        <!-- 运营人员 -->
-        <DropDown ref="DropDown" :work="WorkOrderStatus" title="运营人员" />
-        <!-- 留言框 -->
-        <!-- <el-form-item> -->
-        <MessageBox />
-        <!-- </el-form-item> -->
-        <div class="addWorkBtn">
-          <lsButton title="取消" color="config" @click="CancelWork" />
-          <lsButton title="确定" color="addBtn" />
-        </div>
-      </el-form>
+      <BulletFrame :list="WorkOrderTypeList" />
+    </Dialogue>
+    <!-- 工单配置 -->
+    <Dialogue title="工单配置" :visible.sync="visible1">
+      <div class="Replenishment">
+        <span>补货预警值：</span>  <el-input-number v-model="num" controls-position="right" />
+      </div>
+      <div class="addWorkBtn">
+        <lsButton title="取消" color="config" @click="visible1=false" />
+        <lsButton title="确定" color="addBtn" @click="SetUpAutomaticReplenishmentWarn" />
+      </div>
     </Dialogue>
   </div>
 </template>
 
 <script>
-import MessageBox from '@/components/MessageBox'
+import BulletFrame from './components/BulletFrame.vue'
 import search from '@/components/search'
 import DropDown from '@/components/DropDown'
 import lsButton from '@/components/ls-button'
-import { getWorkOrderStatus, getWorkOrderList, getWorkOrderType } from '@/api/WorkOrder'
+import { getWorkOrderStatus, getWorkOrderList, getWorkOrderType, GetWorkOrderAlert, SetUpAutomaticReplenishmentWarn } from '@/api/WorkOrder'
 import moment from 'moment'
 import tableColumn from '@/components/tablecolumn'
 import Dialogue from '@/components/Dialogue'
@@ -71,7 +66,7 @@ export default {
     lsButton,
     tableColumn,
     Dialogue,
-    MessageBox
+    BulletFrame
   },
   data() {
     return {
@@ -81,14 +76,18 @@ export default {
       pageIndex: 1,
       disable: true,
       disable1: false,
+      DetailDisplay: 1,
       status: '',
       taskCode: '',
       moment,
+      num: 1, // 工单预警数据
       searchFrom: { // 搜索表单数据
         status: '',
         taskCode: ''
       },
       visible: false, // 新建弹出框
+      visible1: false, // 取消弹窗
+      WorkOrderDetails: {}, // 工单详细信息
       WorkOrderTypeList: [] // 工单状态列表
     }
   },
@@ -162,8 +161,25 @@ export default {
     // 获取工单类型
     async getWorkOrderType() {
       const { data } = await getWorkOrderType()
-      this.WorkOrderTypeList = data
-      console.log(data)
+      // this.WorkOrderTypeList = data
+      this.WorkOrderTypeList = data.filter((ele) => (ele.type === 2))
+      console.log(this.WorkOrderTypeList)
+    },
+    // 获取工单预警
+    async GetWorkOrderAlert() {
+      const { data } = await GetWorkOrderAlert()
+      this.num = data
+      this.visible1 = true
+    },
+    // 设置自动补货预警值
+    async SetUpAutomaticReplenishmentWarn() {
+      const { data } = await SetUpAutomaticReplenishmentWarn(this.num)
+      if (data) {
+        this.visible1 = false
+        this.$message.success('设置成功')
+      }
+    },
+    ViewDetails(val) {
     }
   }
 }
@@ -222,5 +238,18 @@ export default {
  display: flex;
  justify-content: center;
  align-items: center;
+ margin-top: 30px;
+}
+.el-form-item__content{
+  display: flex;
+}
+.Replenishment{
+  display: flex;
+  align-items: center;
+  padding: 0 60px;
+span{
+  display: inline-block;
+  width: 100px;
+}
 }
 </style>
