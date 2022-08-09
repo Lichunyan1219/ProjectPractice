@@ -21,7 +21,7 @@ export const getWorkOrderType = () => {
 // 获取人员列表
 export const GetPeopleList = () => {
   return request({
-    url: '/api/user-service/user/search',
+    url: '/api/vm-service/channel/channelList/01000061',
     params: {
       isRepair: false
     }
@@ -49,6 +49,12 @@ export const SetUpAutomaticReplenishmentWarn = (alertValue) => {
     data: {
       alertValue
     }
+  })
+}
+// 获取补货详情
+export const GetReplenishmentDetails = (taskId) => {
+  return request({
+    url: `/api/vm-service/channel/channelList/${taskId}`
   })
 }
 

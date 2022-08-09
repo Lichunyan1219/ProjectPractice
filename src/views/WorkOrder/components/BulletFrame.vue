@@ -56,13 +56,11 @@ export default {
     return {
       ListOperators: {},
       fromData: {
-        desc: '', // 描述信息
-        userId: 1, // 用户id
-        innerCode: '', // 设备编号
-        productType: '', // 工单类型
-        createType: 1, // 工单类型
-        details: [], // 补货信息
-        assignorId: '' // 运营ren
+        desc: '',
+        userId: '1',
+        innerCode: '',
+        productType: '',
+        createType: 1
       }
     }
   },
