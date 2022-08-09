@@ -17,33 +17,44 @@ export default {
   props: {
     title: {
       type: String,
-      default: "",
+      default: ''
     },
     model: {
+      type: String,
+      default: ''
+    },
+    number: {
+      type: String,
+      default: ''
+    },
+    maxlength: {
       type: String,
       default: "",
     },
     // eslint-disable-next-line vue/require-default-prop
+    prop: {
+      type: Array
+    }
   },
   data() {
     return {
-      input: "",
-    };
+      input: ''
+    }
   },
   computed: {},
   watch: {
     input: {
       handler(a, b) {
-        this.$emit("update:model", a);
-      },
-    },
+        this.$emit('update:model', a)
+      }
+    }
   },
   // 生命周期 - 创建完成（可以访问当前this实例）
   created() {},
   // 生命周期 - 挂载完成（可以访问DOM元素）
   mounted() {},
-  methods: {},
-};
+  methods: {}
+}
 </script>
 <style scoped>
 .search {

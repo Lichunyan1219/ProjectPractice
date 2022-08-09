@@ -10,44 +10,46 @@
         <div class="csose3">负责区域：阿萨德</div>
       </div>
 
+      
+
       <!-- 列表 -->
       <el-table style="width: 100%" :lazy="true" type="index">
-        <Tablecolumn title="人员名称"></Tablecolumn>
-        <Tablecolumn title=""></Tablecolumn>
-        <Tablecolumn title="人员名称"></Tablecolumn>
-        <Tablecolumn title="人员名称"></Tablecolumn>
-        <Tablecolumn title="人员名称"></Tablecolumn>
+        <Tablecolumn title="人员名称" />
+        <Tablecolumn title="" />
+        <Tablecolumn title="人员名称" />
+        <Tablecolumn title="人员名称" />
+        <Tablecolumn title="人员名称" />
       </el-table>
     </div>
   </el-dialog>
 </template>
 
 <script>
-import Tablecolumn from "@/components/tablecolumn"; //列表
+import Tablecolumn from '@/components/tablecolumn' // 列表
 export default {
-  data() {
-    return {};
+
+  components: {
+    Tablecolumn
   },
 
   props: {
     visible: {
       type: Boolean,
-      required: true,
-    },
+      required: true
+    }
   },
-
-  components: {
-    Tablecolumn,
+  data() {
+    return {}
   },
 
   created() {},
 
   methods: {
     onClose() {
-      this.$emit("update:visible", false);
-    },
-  },
-};
+      this.$emit('update:visible', false)
+    }
+  }
+}
 </script>
 
 <style scoped lang="scss">

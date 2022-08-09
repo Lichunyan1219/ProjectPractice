@@ -33,3 +33,31 @@ export const getUserSearchUserWork = (params) => {
         params
     })
 }
+
+// 角色列表
+// /api/user-service/role
+export const getUserRoleApi = (params) => {
+    return request({
+        url: '/api/user-service/role',
+        params
+    })
+}
+
+// 区域列表
+// /api/vm-service/region/search
+export const getUserRegionSearchApi = (params) => {
+    return request({
+        url: '/api/vm-service/region/search',
+        params
+    })
+}
+
+// 删除人员
+// /api/user-service/user/:id
+// DELETE
+export const deleteUserIDApi = (id) => {
+    return request({
+        url: '/api/user-service/user/' + id,
+        method: 'DELETE'
+    })
+}
