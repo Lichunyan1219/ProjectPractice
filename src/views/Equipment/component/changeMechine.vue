@@ -53,7 +53,7 @@
             v-if="machineInfo.image"
             :src="machineInfo.image"
             class="avatar"
-          >
+          />
           <i v-else class="el-icon-plus avatar-uploader-icon" />
         </el-upload>
         支持扩展名：jpg、png，文件不得大于100kb
@@ -67,9 +67,9 @@
 </template>
 
 <script>
-import Button from '@/components/ls-button'
-import Dialog from '@/components/Dialogue'
-import { getPhoto } from '@/api/public'
+import Button from "@/components/ls-button";
+import Dialog from "@/components/Dialogue";
+import { getPhoto } from "@/api/public";
 export default {
   props: {
     visible: {
@@ -82,18 +82,18 @@ export default {
   },
   components: {
     Button,
-    Dialog
+    Dialog,
   },
   props: {
     visible: {
-      type: Boolean
-    }
+      type: Boolean,
+    },
   },
   data() {
     return {
       machineInfo: {
-        name: '',
-        model: '',
+        name: "",
+        model: "",
         vmRow: 1,
         vmCol: 1,
         channelMaxCapacity: 1,
@@ -136,6 +136,9 @@ export default {
     },
     addcheckYes() {
       this.$emit("addcheckYes", this.machineInfo);
+    },
+    cancelCheckNo() {
+      this.visible2 = false;
     },
   },
 
