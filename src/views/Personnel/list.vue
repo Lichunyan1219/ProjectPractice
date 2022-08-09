@@ -26,12 +26,13 @@
         icon="el-icon-circle-plus-outline"
         color="addBtn"
         title="新建"
+        @click="redact"
       />
       <!-- 新建 -->
 
       <!-- 列表 -->
       <el-table
-        :data="listste"
+        :data="page.currentPageRecords"
         style="width: 100%"
         :lazy="true"
         empty-text="暂无数据"
@@ -102,8 +103,9 @@ export default {
       dialogVisible: false,
       searchFrom: {
         // 搜索表单数据
-        taskCode: "",
-      },
+        taskCode: ''
+      }
+        // 搜索表单数据
     };
   },
   components: {
@@ -125,19 +127,12 @@ export default {
     async getUserId() {
       const { data } = await getSearchApi({
         pageIndex: this.pageIndex,
-        ...this.searchFrom,
-        isRepair: false,
+        ...this.searchFrom
       });
       this.page = data;
-      this.listste = data.currentPageRecords;
-      console.log(data);
-      // const workList = await data.currentPageRecords;
-      // this.WorkOrderList = workList;
-      // this.page = data;
     },
     // 下一页
     NextPage() {
-      // console.log(12);
       if (this.pageIndex < this.page.totalPage) {
         this.pageIndex++
         this.disable = false
@@ -156,8 +151,12 @@ export default {
 
     // 搜索
     async JobSearch() {
+     const res = await getSearchApi({
+        userName:this.searchFrom.taskCode
+      })
+     this.page.currentPageRecords = res
       this.getUserId()
-      console.log(this.$refs.search)
+      console.log(res);
     },
     redact() {
       this.dialogVisible = true;
@@ -165,19 +164,22 @@ export default {
 
     // 删除
     async onRemove () {
-      try {
-        await this.$confirm('此操作将永久删除该部门, 是否继续?', '提示', {
-          confirmButtonText: '删除',
-          cancelButtonText: '取消',
-          type: 'text',
-        })
-        await deleteUserIDApi(this.listste.id)
-        this.$message.success('删除成功')
-        // this.$emit('remove')
-        console.log(this.listste.id);
-      } catch (error) {
-        console.log(error);
-      }
+      // try {
+      //   await this.$confirm('此操作将永久删除该部门, 是否继续?', '提示', {
+      //     confirmButtonText: '删除',
+      //     cancelButtonText: '取消',
+      //     type: 'warning',
+      //   })
+      //   await deleteUserIDApi(this.listste.id)
+      //   // this.getUserId()
+      //   this.$message.success('删除成功')
+      //   this.$emit('remove')
+      //   console.log(this.listste.id);
+      // } catch (error) {
+      //   console.log(error);
+      // }
+      await deleteUserIDApi(this.listste.id)
+      console.log(this.listste.id);
     }
   },
 };
