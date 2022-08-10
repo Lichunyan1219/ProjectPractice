@@ -4,7 +4,7 @@
     <!-- 头部 -->
     <div class="top">
       <el-form class="form" label-position="right" label-width="80px">
-        <search title="点位搜索:" :model.sync="searchInput"></search>
+        <search title="点位搜索:" :model.sync="searchInput" />
         <el-form-item label="区域搜索">
           <el-select
             v-model.trim="input"
@@ -26,7 +26,7 @@
           size="mini"
           title="查询"
           @click="getPointManagementList()"
-        ></lsButton>
+        />
       </el-form>
     </div>
     <!-- 新建按钮 -->
@@ -37,7 +37,7 @@
         title="新建"
         color="addBtn"
         @click="newClick"
-      ></lsButton>
+      />
       <el-table
         ref="aabb"
         :data="pointManagementData.currentPageRecords"
@@ -49,30 +49,29 @@
               type="text"
               class="viewDetails"
               @click="viewDetailsClick(scope.row)"
-              >查看详情</el-button
-            >
+            >查看详情</el-button>
             <el-button
               type="text"
               class="modify"
               @click="modifyClick(scope.row)"
-              >修改</el-button
-            >
-            <el-button type="text" class="del" @click="delClick(scope.row)"
-              >删除</el-button
-            >
+            >修改</el-button>
+            <el-button
+              type="text"
+              class="del"
+              @click="delClick(scope.row)"
+            >删除</el-button>
           </template>
         </el-table-column>
         <tableColumn
           title="序号"
           type="index"
           :pag="pointManagementData.pageIndex"
-        >
-        </tableColumn>
-        <tableColumn title="点位名称" label="name"></tableColumn>
-        <tableColumn title="所在区域" label="region.name"></tableColumn>
-        <tableColumn title="商圈类型" label="businessType.name"></tableColumn>
-        <tableColumn title="合作商" label="ownerName"></tableColumn>
-        <tableColumn title="详细地址" label="addr"></tableColumn>
+        />
+        <tableColumn title="点位名称" label="name" />
+        <tableColumn title="所在区域" label="region.name" />
+        <tableColumn title="商圈类型" label="businessType.name" />
+        <tableColumn title="合作商" label="ownerName" />
+        <tableColumn title="详细地址" label="addr" />
       </el-table>
       <!-- 新增对话框 -->
       <el-dialog
@@ -83,20 +82,20 @@
         class="newDialog"
       >
         <el-form
+          ref="form"
           :model="formData"
           :rules="formRules"
-          ref="form"
           label-width="100px"
           class="demo-ruleForm"
-          resetFields
+          reset-fields
         >
           <el-form-item label="点位名称" prop="name">
             <el-input
+              v-model="formData.name"
               placeholder="请输入"
               maxlength="15"
               show-word-limit
-              v-model="formData.name"
-            ></el-input>
+            />
           </el-form-item>
           <el-form-item label="所在区域" prop="regionId">
             <el-select
@@ -148,9 +147,9 @@
           </el-form-item>
           <el-form-item label="详细地址" prop="areaCode">
             <el-cascader
-              :options="options"
-              v-model="formData.areaCode"
               ref="cascader"
+              v-model="formData.areaCode"
+              :options="options"
               placeholder="请选择"
             >
               <template slot-scope="{ node, data }">
@@ -161,14 +160,13 @@
           </el-form-item>
           <el-form-item prop="addr">
             <el-input
+              v-model="formData.addr"
               type="textarea"
               placeholder="请输入详细地址"
-              v-model="formData.addr"
               maxlength="60"
               show-word-limit
               class="addressText"
-            >
-            </el-input>
+            />
           </el-form-item>
           <div class="dialogButton">
             <lsButton
@@ -176,13 +174,13 @@
               title="取消"
               color="cancel"
               @click="onClose"
-            ></lsButton>
+            />
             <lsButton
               size="mini"
               title="确认"
               color="addBtn"
               @click="onSave"
-            ></lsButton>
+            />
           </div>
         </el-form>
       </el-dialog>
@@ -194,17 +192,16 @@
             empty-text="暂无数据"
             :data="PointDeatailsData.data"
           >
-            <el-table-column type="index" label="序号"> </el-table-column>
+            <el-table-column type="index" label="序号" />
             <el-table-column
               label="机器编号"
               property="innerCode"
-            ></el-table-column>
+            />
             <el-table-column
               label="设备状态"
               property="vmStatus"
-            ></el-table-column>
-            <el-table-column property="lastSupplyTime" label="最后一次供货时间">
-            </el-table-column>
+            />
+            <el-table-column property="lastSupplyTime" label="最后一次供货时间" />
           </el-table>
         </div>
       </Dialog>
@@ -212,45 +209,38 @@
     <!-- 底部 -->
     <div class="bottom">
       <div class="left">
-        <span
-          >共<span>{{ pointManagementData.totalCount }}</span
-          >条记录</span
-        >
-        <span
-          >第<span>{{ pointManagementData.pageIndex }}</span
-          >/<span>{{ pointManagementData.totalPage }}</span
-          >页</span
-        >
+        <span>共<span>{{ pointManagementData.totalCount }}</span>条记录</span>
+        <span>第<span>{{ pointManagementData.pageIndex }}</span>/<span>{{ pointManagementData.totalPage }}</span>页</span>
       </div>
       <div class="right">
         <lsButton
+          id="previousPage"
           size="mini"
           title="上一页"
           color="addBtn"
           :disable="disable"
           class="previousPage"
           @click="previousPageClick"
-          id="previousPage"
-        ></lsButton>
+        />
         <lsButton
+          id="nextPage"
           size="mini"
           title="下一页"
           :disable="disable1"
           color="addBtn"
           class="nextPage"
           @click="nextPageClick"
-          id="nextPage"
-        ></lsButton>
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { regionData } from "element-china-area-data";
-import search from "@/components/search";
-import tableColumn from "@/components/tablecolumn";
-import lsButton from "@/components/ls-button";
+import { regionData } from 'element-china-area-data'
+import search from '@/components/search'
+import tableColumn from '@/components/tablecolumn'
+import lsButton from '@/components/ls-button'
 import {
   pointSearch,
   areaList,
@@ -260,16 +250,16 @@ import {
   getPointDeatails,
   modifyPoint,
   deletePoint
-} from "@/api/pointManagement";
-import Dialog from "@/components/Dialogue";
-import { TransitionGroupStub } from "@vue/test-utils";
+} from '@/api/pointManagement'
+import Dialog from '@/components/Dialogue'
+import { TransitionGroupStub } from '@vue/test-utils'
 export default {
-  name: "pointManagement",
+  name: 'PointManagement',
   components: {
     search,
     lsButton,
     tableColumn,
-    Dialog,
+    Dialog
   },
   data() {
     return {
@@ -278,217 +268,217 @@ export default {
       options: regionData,
       pointManagementData: {},
       areaManagementData: {},
-      //合作商搜索数据
+      // 合作商搜索数据
       numberPartnerSearchesData: {},
-      //商圈列表数据
+      // 商圈列表数据
       businessDistrictListData: {},
-      //点位查看详情数据
+      // 点位查看详情数据
       PointDeatailsData: {},
       disable: false,
       disable1: false,
-      input: "",
-      searchInput:'',
-      //新增区域对话框
+      input: '',
+      searchInput: '',
+      // 新增区域对话框
       dialogVisible: false,
       dialogVisible1: false,
-      //控制新增、修改对话框发送新增请求还是修改请求
+      // 控制新增、修改对话框发送新增请求还是修改请求
       dialogShow: true,
-      //点击修改当前项的id
-      itemId: "",
+      // 点击修改当前项的id
+      itemId: '',
       formData: {
-        name: "",
-        addr: "",
-        areaCode: "",
-        createUserId: "",
-        regionId: "",
-        businessId: "",
-        ownerId: "",
-        ownerName: "",
+        name: '',
+        addr: '',
+        areaCode: '',
+        createUserId: '',
+        regionId: '',
+        businessId: '',
+        ownerId: '',
+        ownerName: ''
       },
       formRules: {
-        name: [{ required: true, message: "请输入点位名称", trigger: "blur" }],
-        addr: [{ required: true, message: "请输入详细地址", trigger: "blur" }],
+        name: [{ required: true, message: '请输入点位名称', trigger: 'blur' }],
+        addr: [{ required: true, message: '请输入详细地址', trigger: 'blur' }],
         areaCode: [
-          { required: true, message: "请选择详细地址", trigger: "blur" },
+          { required: true, message: '请选择详细地址', trigger: 'blur' }
         ],
         regionId: [
-          { required: true, message: "请输入所属区域", trigger: "blur" },
+          { required: true, message: '请输入所属区域', trigger: 'blur' }
         ],
         businessId: [
-          { required: true, message: "请输入所在商圈", trigger: "blur" },
+          { required: true, message: '请输入所在商圈', trigger: 'blur' }
         ],
         ownerId: [
-          { required: true, message: "请输入归属合作商", trigger: "blur" },
-        ],
-      },
-    };
+          { required: true, message: '请输入归属合作商', trigger: 'blur' }
+        ]
+      }
+    }
   },
   computed: {},
   watch: {},
   // 生命周期 - 创建完成（可以访问当前this实例）
   created() {
-    this.getPointManagementList();
-    this.getAreaLIst();
-    this.getBusinessDistrictList();
-    this.getNumberPartnerSearchesData();
+    this.getPointManagementList()
+    this.getAreaLIst()
+    this.getBusinessDistrictList()
+    this.getNumberPartnerSearchesData()
   },
   // 生命周期 - 挂载完成（可以访问DOM元素）
   mounted() {},
   methods: {
-    //获取点位搜索列表
+    // 获取点位搜索列表
     async getPointManagementList() {
       const res = await pointSearch({
         pageIndex: this.pageIndex,
         regionId: this.input,
-        name:this.searchInput
-      });
-      this.pointManagementData = res.data;
-      console.log(this.pointManagementData);
+        name: this.searchInput
+      })
+      this.pointManagementData = res.data
+      console.log(this.pointManagementData)
     },
-    //获取区域列表
+    // 获取区域列表
     async getAreaLIst() {
-      const res = await areaList({});
-      this.areaManagementData = res.data;
+      const res = await areaList({})
+      this.areaManagementData = res.data
       // console.log(this.areaManagementData);
     },
-    //获取商圈列表
+    // 获取商圈列表
     async getBusinessDistrictList() {
-      const res = await businessDistrictList();
-      this.businessDistrictListData = res.data;
+      const res = await businessDistrictList()
+      this.businessDistrictListData = res.data
     },
-    //获取合作商搜索列表
+    // 获取合作商搜索列表
     async getNumberPartnerSearchesData() {
       const res = await partnerSearch({
-        pageSize: 10000,
-      });
-      this.numberPartnerSearchesData = res.data;
+        pageSize: 10000
+      })
+      this.numberPartnerSearchesData = res.data
       // console.log(this.numberPartnerSearchesData);
     },
-        //上一页按钮点击事件
+    // 上一页按钮点击事件
     previousPageClick() {
       if (this.pageIndex < 2) {
-        this.disable = true;
+        this.disable = true
       } else {
-        this.pageIndex--;
-        this.getPointManagementList();
-        document.getElementById("nextPage").disabled = false;
+        this.pageIndex--
+        this.getPointManagementList()
+        document.getElementById('nextPage').disabled = false
       }
     },
-    //下一页按钮点击事件
+    // 下一页按钮点击事件
     nextPageClick() {
       if (this.pageIndex >= this.pointManagementData.totalPage) {
-        this.disable1 = true;
+        this.disable1 = true
       } else {
-        this.pageIndex++;
-        this.getPointManagementList();
-        this.disable = false;
+        this.pageIndex++
+        this.getPointManagementList()
+        this.disable = false
       }
     },
-    //新建点击事件
+    // 新建点击事件
     async newClick() {
-      this.dialogVisible = true;
-      this.dialogShow = true;
-      this.getAreaLIst();
-      this.getBusinessDistrictList();
-      this.getNumberPartnerSearchesData();
+      this.dialogVisible = true
+      this.dialogShow = true
+      this.getAreaLIst()
+      this.getBusinessDistrictList()
+      this.getNumberPartnerSearchesData()
     },
-    //新建对话框的关闭事件
+    // 新建对话框的关闭事件
     handleClose() {
-      //form表单清空选中的节点
-      this.$refs.form.resetFields();
-      //Cascader 级联选择器清空选中的节点
-      this.$refs["cascader"].panel.clearCheckedNodes();
-      this.dialogVisible = false;
+      // form表单清空选中的节点
+      this.$refs.form.resetFields()
+      // Cascader 级联选择器清空选中的节点
+      this.$refs['cascader'].panel.clearCheckedNodes()
+      this.dialogVisible = false
       this.formData = {
-        name: "",
-        addr: "",
-        areaCode: "",
-        createUserId: "",
-        regionId: "",
-        businessId: "",
-        ownerId: "",
-        ownerName: "",
-      };
+        name: '',
+        addr: '',
+        areaCode: '',
+        createUserId: '',
+        regionId: '',
+        businessId: '',
+        ownerId: '',
+        ownerName: ''
+      }
     },
-    //新建、修改取消按钮点击事件
+    // 新建、修改取消按钮点击事件
     onClose() {
-      this.dialogVisible = false;
-      this.handleClose();
+      this.dialogVisible = false
+      this.handleClose()
     },
-    //新建、修改确定按钮点击事件
+    // 新建、修改确定按钮点击事件
     async onSave() {
       if (this.dialogShow) {
-        await this.$refs.form.validate();
-        this.formData.createUserId = this.$store.state.user.userId;
-        this.formData.areaCode = this.formData.areaCode[2];
-        const res = await newPoint(this.formData);
-        console.log(res);
-        this.$message.success("新增区域成功");
-        this.dialogVisible = false;
+        await this.$refs.form.validate()
+        this.formData.createUserId = this.$store.state.user.userId
+        this.formData.areaCode = this.formData.areaCode[2]
+        const res = await newPoint(this.formData)
+        console.log(res)
+        this.$message.success('新增区域成功')
+        this.dialogVisible = false
       } else {
-        const res = await modifyPoint(this.formData, this.itemId);
-        console.log(res);
-        this.$message.success("修改区域成功");
-        this.dialogVisible = false;
-        this.getPointManagementList();
+        const res = await modifyPoint(this.formData, this.itemId)
+        console.log(res)
+        this.$message.success('修改区域成功')
+        this.dialogVisible = false
+        this.getPointManagementList()
       }
-      this.formData.regionName = "";
-      this.formData.remark = "";
+      this.formData.regionName = ''
+      this.formData.remark = ''
     },
-    //修改点击事件
+    // 修改点击事件
     modifyClick(modefyValue) {
-      console.log(modefyValue);
-      this.formData.name = modefyValue.name;
-      this.formData.regionId = modefyValue.region.id;
-      this.formData.businessId = modefyValue.businessType.id;
-      this.formData.ownerId = modefyValue.ownerId;
-      this.formData.addr = modefyValue.addr;
-      this.formData.areaCode = modefyValue.areaCode;
-      this.formData.createUserId = this.$store.state.user.userId;
-      this.itemId = modefyValue.id;
-      this.dialogVisible = true;
-      this.dialogShow = false;
+      console.log(modefyValue)
+      this.formData.name = modefyValue.name
+      this.formData.regionId = modefyValue.region.id
+      this.formData.businessId = modefyValue.businessType.id
+      this.formData.ownerId = modefyValue.ownerId
+      this.formData.addr = modefyValue.addr
+      this.formData.areaCode = modefyValue.areaCode
+      this.formData.createUserId = this.$store.state.user.userId
+      this.itemId = modefyValue.id
+      this.dialogVisible = true
+      this.dialogShow = false
     },
-    //查看详情点击事件
+    // 查看详情点击事件
     async viewDetailsClick(itemValue) {
-      this.dialogVisible1 = true;
-      //获取点位详情列表
-      const res = await getPointDeatails(itemValue.id);
-      this.PointDeatailsData = res;
-      console.log(res);
-      this.vmStatusConversion();
-      this.lastSupplyTimeConversion();
+      this.dialogVisible1 = true
+      // 获取点位详情列表
+      const res = await getPointDeatails(itemValue.id)
+      this.PointDeatailsData = res
+      console.log(res)
+      this.vmStatusConversion()
+      this.lastSupplyTimeConversion()
     },
-    //查看详情中售货机状态转化函数
+    // 查看详情中售货机状态转化函数
     vmStatusConversion() {
       this.PointDeatailsData.data.forEach((item) => {
         if (item.vmStatus === 0) {
-          return (item.vmStatus = "未投放");
+          return (item.vmStatus = '未投放')
         } else if (item.vmStatus === 1) {
-          return (item.vmStatus = "运营");
+          return (item.vmStatus = '运营')
         } else {
-          return (item.vmStatus = "撤机");
+          return (item.vmStatus = '撤机')
         }
-      });
+      })
     },
-    //查看详情中最后一次供货时间转化函数
+    // 查看详情中最后一次供货时间转化函数
     lastSupplyTimeConversion() {
       this.PointDeatailsData.data.forEach((item) => {
         item.lastSupplyTime = item.lastSupplyTime
-          .replace("-", ".")
-          .replace("-", ".")
-          .replace("T", " ");
-        return item.lastSupplyTime;
-      });
+          .replace('-', '.')
+          .replace('-', '.')
+          .replace('T', ' ')
+        return item.lastSupplyTime
+      })
     },
-    //删除点击事件
-    async delClick(delValue){
-      const res=await deletePoint(delValue.id)
-      console.log(res);
+    // 删除点击事件
+    async delClick(delValue) {
+      const res = await deletePoint(delValue.id)
+      console.log(res)
       this.getPointManagementList()
     }
-  },
-};
+  }
+}
 </script>
 <style scoped lang="scss">
 //头部

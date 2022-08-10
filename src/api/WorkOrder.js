@@ -18,15 +18,6 @@ export const getWorkOrderType = () => {
     url: '/api/task-service/taskType/list'
   })
 }
-// 获取人员列表
-export const GetPeopleList = () => {
-  return request({
-    url: '/api/vm-service/channel/channelList/01000061',
-    params: {
-      isRepair: false
-    }
-  })
-}
 // 创建工单
 export const CreateWorkOrder = (data) => {
   return request({
