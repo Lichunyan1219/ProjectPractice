@@ -67,7 +67,6 @@ export const fixMachineType = (typeId, data) => {
     data,
   });
 };
-
 // 获取售货机货道详情
 export const getMachineRoad = (innerCode) => {
   return request({
