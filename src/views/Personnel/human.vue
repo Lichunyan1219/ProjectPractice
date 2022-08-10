@@ -12,24 +12,55 @@
               <div class="grid-2">工单总数（个）</div>
             </div>
           </el-col>
-          <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
-          <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
-          <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
+          <el-col :span="6"
+            ><div class="grid-content bg-purple">
+              <div class="grid-1">3</div>
+              <div class="grid-2">完成工单（个）</div>
+            </div></el-col
+          >
+          <el-col :span="6"
+            ><div class="grid-content bg-purple">
+              <div class="grid-1">0</div>
+              <div class="grid-2">拒绝工单（个）</div>
+            </div></el-col
+          >
+          <el-col :span="6"
+            ><div class="grid-content bg-purple">
+              <div class="grid-1">4</div>
+              <div class="grid-2">运营人员（个）</div>
+            </div></el-col
+          >
         </el-row>
       </div>
+
       <div class="app-main-operation-1 app-ation">
-        <div class="app-main-operation-2">运营人员（当天）</div>
+        <div class="app-main-operation-2">运维人员（当天）</div>
 
         <el-row :gutter="20">
           <el-col :span="6">
             <div class="grid-content bg-purple">
-              <div class="grid-1">23</div>
+              <div class="grid-1">13</div>
               <div class="grid-2">工单总数（个）</div>
             </div>
           </el-col>
-          <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
-          <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
-          <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
+          <el-col :span="6"
+            ><div class="grid-content bg-purple">
+              <div class="grid-1">3</div>
+              <div class="grid-2">完成工单（个）</div>
+            </div></el-col
+          >
+          <el-col :span="6"
+            ><div class="grid-content bg-purple">
+              <div class="grid-1">0</div>
+              <div class="grid-2">拒绝工单（个）</div>
+            </div></el-col
+          >
+          <el-col :span="6"
+            ><div class="grid-content bg-purple">
+              <div class="grid-1">0</div>
+              <div class="grid-2">运营人员（个）</div>
+            </div></el-col
+          >
         </el-row>
       </div>
     </div>
@@ -61,7 +92,6 @@
         </div>
 
         <div class="app-imgs">
-          
           <div class="app-imgs1">
             <img
               src="http://likede2-admin.itheima.net/img/empty.87c4f71b.png"
@@ -71,25 +101,73 @@
           </div>
         </div>
       </div>
-      <div class="app-main-details-1 app-main-details-ranking">1111</div>
+
+      <div class="app-main-details-1 app-main-details-ranking">
+        <div class="app-message">
+          <div class="app-message-1">人效排名（月度）</div>
+          <div class="app-message-2">
+            <el-select
+              v-model="OperatorList.regionName"
+              placeholder="全部"
+              size="medium"
+            >
+              <el-option
+                v-for="item in district"
+                :key="item.id"
+                :label="item.name"
+                :value="item.name"
+              >
+              </el-option>
+            </el-select>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import { getOperatorListApi, getUserRegionSearchApi } from "@/api/essential";
+import DropDown from "@/components/DropDown";
 export default {
   data() {
     return {
+      WorkOrderStatus: "",
       value1: "",
+      OperatorList: {
+        userName: "",
+        userId: "",
+        regionName: "",
+      },
+      district: [], //接收获取的区域列表的数据
+      value: "",
     };
+  },
+  components: {
+    DropDown,
   },
   computed: {},
   watch: {},
   // 生命周期 - 创建完成（可以访问当前this实例）
-  created() {},
+  created() {
+    this.getOperatorListApi();
+    this.getUserRegionSearch();
+  },
   // 生命周期 - 挂载完成（可以访问DOM元素）
   mounted() {},
-  methods: {},
+  methods: {
+    async getOperatorListApi() {
+      const res = await getOperatorListApi(this.userName, this.userId);
+      // console.log(res);
+    },
+
+    // 区域列表
+    async getUserRegionSearch() {
+      const { data } = await getUserRegionSearchApi();
+      this.district = data.currentPageRecords;
+      console.log(this.district);
+    },
+  },
 };
 </script>
 <style scoped lang="scss">
@@ -192,69 +270,95 @@ export default {
       // background-color: rgb(255, 0, 0);
       flex-direction: column;
       background: rgb(255, 255, 255);
-      .app-message {
-        display: flex;
-        align-items: center;
-        height: 32px;
-        margin-top: 10px;
-        .app-state {
-          // background-color: rgb(5, 5, 5);
-          flex: 1;
-          font-size: 16px;
-          font-weight: 600;
-          color: #333;
-        }
-        .app-time {
-          // background-color: rgb(255, 0, 0);
+
+      .app-state {
+        // background-color: rgb(5, 5, 5);
+        flex: 1;
+        font-size: 16px;
+        font-weight: 600;
+        color: #333;
+      }
+      .app-time {
+        // background-color: rgb(255, 0, 0);
+        width: 230px;
+        margin-right: 21px;
+        .el-input__inner {
           width: 230px;
           margin-right: 21px;
-          .el-input__inner {
-            width: 230px;
-            margin-right: 21px;
-          }
-        }
-        .app-date {
-          background-color: rgb(0, 255, 0);
-          width: 129px;
-          height: 34px;
-          background: rgba(233, 243, 255, 0.37);
-          border-radius: 10px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          .date-item {
-            width: 37px;
-            // cursor: pointer;
-            // height: 25px;
-            font-size: 14px;
-            color: #9ca3b4;
-          }
-        }
-        .app-imgs {
-          height: 100%;
-          width: 100%;
-          // position: absolute;
-          user-select: none;
-          // background-color: rgb(255, 0, 0);
-          
-          .app-imgs1 {
-            position: absolute;
-            top: 130px;
-            margin-top: 130px;
-            left: 150px;
-            // display: flex;
-            // justify-content: center;
-            // width: 100%;
-            // height: 100%;
-          }
         }
       }
+      .app-date {
+        background-color: rgb(0, 255, 0);
+        width: 129px;
+        height: 34px;
+        background: rgba(233, 243, 255, 0.37);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        .date-item {
+          width: 37px;
+          // cursor: pointer;
+          // height: 25px;
+          font-size: 14px;
+          color: #9ca3b4;
+        }
+      }
+      .app-imgs {
+        height: 100%;
+        width: 100%;
+        // position: absolute;
+        user-select: none;
+        // background-color: rgb(255, 0, 0);
+
+        .app-imgs1 {
+          position: absolute;
+          top: 130px;
+          margin-top: 130px;
+          left: 150px;
+          // display: flex;
+          // justify-content: center;
+          // width: 100%;
+          // height: 100%;
+        }
+      }
+    }
+    .app-message {
+      display: flex;
+      align-items: center;
+      height: 32px;
+      margin-top: 10px;
     }
     .app-main-details-ranking {
       width: 25%;
       flex-direction: column;
-      background: rgb(255, 25, 25);
+      background: rgb(255, 255, 255);
+      display: flex;
+      .app-message-1 {
+        background-color: #fff;
+
+        flex: 1;
+        font-size: 14px;
+        height: 32px;
+        font-weight: 600;
+        color: #333;
+        align-items: center;
+        line-height: 34px;
+      }
+      .app-message-2 {
+        // background-color: rgb(0, 81, 255);
+        width: 80px;
+        height: 32px;
+      }
     }
   }
+}
+
+.el-dropdown-link {
+  cursor: pointer;
+  color: #409eff;
+}
+.el-icon-arrow-down {
+  font-size: 12px;
 }
 </style>

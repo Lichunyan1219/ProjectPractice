@@ -70,3 +70,21 @@ export const postUserApi = (data) => {
         data
     })
 }
+
+// 修改人员
+// /api/user-service/user/:id
+export const putUserIDApi = (data) => {
+    return request({
+        url: `/api/user-service/user/${data.id}`,
+        method: 'PUT',
+        data
+    })
+}
+
+// 根据售货机获取运营人员列表
+// /api/user-service/user/operatorList/:innerCode
+export const getOperatorListApi = (innerCode) => {
+    return request({
+        url: '/api/user-service/user/operatorList/' + innerCode,
+    })
+}

@@ -32,7 +32,6 @@
           </el-select>
         </el-form-item>
 
-
         <LsButton title="查询" icon="el-icon-search" @click="JobSearch" />
       </el-form>
     </div>
@@ -44,11 +43,14 @@
       empty-text="暂无数据"
       type="index"
     >
-      <Tablecolumn title="操作">
-        <el-button type="text" class="el-button1" @click="redact"
-          >查看详情</el-button
-        >
-      </Tablecolumn>
+      <el-table-column prop="date" label="操作">
+        <template slot-scope="scope">
+          <el-button type="text" class="el-button1" @click="redact(scope.row)"
+            >查看详情
+          </el-button>
+        </template>
+      </el-table-column>
+
       <Tablecolumn title="序号" type="index" :pag="page.pageIndex" />
       <Tablecolumn title="人员名称" label="userName" />
       <Tablecolumn title="角色" label="roleName" />
@@ -112,8 +114,8 @@ export default {
       searchFrom: {
         // 搜索表单数据
         pageIndex: 1,
-         userName: '',
-         roleName: ''
+        userName: "",
+        roleName: "",
       },
       formData: {
         userName: "", //人员名称
@@ -136,9 +138,8 @@ export default {
     // 数据列表
     async getUserSearchUserWork() {
       const { data } = await getUserSearchUserWork(this.searchFrom);
-      this.listste = data.currentPageRecords
-      // console.log(data);
-    // console.log(this.searchFrom);
+      this.listste = data.currentPageRecords;
+      console.log(this.listste);
       this.page = data;
     },
 
@@ -169,8 +170,8 @@ export default {
 
     // 搜索
     async JobSearch() {
-      this.searchFrom.pageIndex = 1
-     await this.getUserSearchUserWork();
+      this.searchFrom.pageIndex = 1;
+      await this.getUserSearchUserWork();
       // console.log(this.$refs.search);
     },
     redact() {
