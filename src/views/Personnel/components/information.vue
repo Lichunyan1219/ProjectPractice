@@ -116,7 +116,8 @@ export default {
         regionName: "", //归属区域
         mobile: "", //联系电话
         image: "", //头像
-        roleId: "",
+        roleId: "",//角色Id
+        regionId: "", //所属区域Id
         status: false, //启用状态
       },
       peoples: [], // 接收获取的角色列表的数据
@@ -208,15 +209,27 @@ export default {
         image: "", //头像
         roleId: "",
         status: false, //启用状态
+        regionId: ''
       };
     },
 
     // 确认
     async onSelect(val) {
-      // await this.$refs.deptForm.validate();
+      await this.$refs.deptForm.validate();
       const res = await putUserIDApi(this.formData);
       // this.$message.success('编辑成功')
       console.log(res);
+
+      // const res = await postUserApi({
+      //   userName: this.formData.userName,
+      //   regionName: this.formData.regionName,
+      //   mobile: this.formData.mobile,
+      //   image: this.formData.image,
+      //   roleId: this.formData.roleId,
+      //   status: this.formData.status,
+      //   regionId: this.formData.regionId
+      // })
+      // console.log(res);
     },
 
     // 角色列表

@@ -12,24 +12,55 @@
               <div class="grid-2">工单总数（个）</div>
             </div>
           </el-col>
-          <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
-          <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
-          <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
+          <el-col :span="6"
+            ><div class="grid-content bg-purple">
+              <div class="grid-1">3</div>
+              <div class="grid-2">完成工单（个）</div>
+            </div></el-col
+          >
+          <el-col :span="6"
+            ><div class="grid-content bg-purple">
+              <div class="grid-1">0</div>
+              <div class="grid-2">拒绝工单（个）</div>
+            </div></el-col
+          >
+          <el-col :span="6"
+            ><div class="grid-content bg-purple">
+              <div class="grid-1">4</div>
+              <div class="grid-2">运营人员（个）</div>
+            </div></el-col
+          >
         </el-row>
       </div>
+
       <div class="app-main-operation-1 app-ation">
-        <div class="app-main-operation-2">运营人员（当天）</div>
+        <div class="app-main-operation-2">运维人员（当天）</div>
 
         <el-row :gutter="20">
           <el-col :span="6">
             <div class="grid-content bg-purple">
-              <div class="grid-1">23</div>
+              <div class="grid-1">13</div>
               <div class="grid-2">工单总数（个）</div>
             </div>
           </el-col>
-          <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
-          <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
-          <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
+          <el-col :span="6"
+            ><div class="grid-content bg-purple">
+              <div class="grid-1">3</div>
+              <div class="grid-2">完成工单（个）</div>
+            </div></el-col
+          >
+          <el-col :span="6"
+            ><div class="grid-content bg-purple">
+              <div class="grid-1">0</div>
+              <div class="grid-2">拒绝工单（个）</div>
+            </div></el-col
+          >
+          <el-col :span="6"
+            ><div class="grid-content bg-purple">
+              <div class="grid-1">0</div>
+              <div class="grid-2">运营人员（个）</div>
+            </div></el-col
+          >
         </el-row>
       </div>
     </div>
@@ -75,7 +106,11 @@
         <div class="app-message">
           <div class="app-message-1">人效排名（月度）</div>
           <div class="app-message-2">
-            <el-select v-model="OperatorList.regionName" placeholder="全部" size="medium">
+            <el-select
+              v-model="OperatorList.regionName"
+              placeholder="全部"
+              size="medium"
+            >
               <el-option
                 v-for="item in district"
                 :key="item.id"
@@ -102,10 +137,10 @@ export default {
       OperatorList: {
         userName: "",
         userId: "",
-        regionName: ''
+        regionName: "",
       },
       district: [], //接收获取的区域列表的数据
-        value: ''
+      value: "",
     };
   },
   components: {
@@ -116,7 +151,7 @@ export default {
   // 生命周期 - 创建完成（可以访问当前this实例）
   created() {
     this.getOperatorListApi();
-    this.getUserRegionSearch()
+    this.getUserRegionSearch();
   },
   // 生命周期 - 挂载完成（可以访问DOM元素）
   mounted() {},

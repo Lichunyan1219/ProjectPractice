@@ -164,6 +164,7 @@ export default {
       this.$refs.formData.formData.status=val.status
       this.$refs.formData.formData.roleId=val.roleId
       this.$refs.formData.formData.userName=val.userName
+      this.$refs.formData.formData.regionId = val.regionId
     },
 
 // 新增
