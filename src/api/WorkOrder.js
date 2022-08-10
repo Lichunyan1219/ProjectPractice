@@ -51,4 +51,42 @@ export const SetUpAutomaticReplenishmentWarn = (alertValue) => {
     }
   })
 }
+//工单管理——补货详情
+export const getReplenishmentDetails = (taskId) => {
+  return request({
+    url: '/api/task-service/taskDetails/'+taskId,
+  })
+}
+//工单管理——创建工单
+export const createWorkOrder = (data) => {
+  return request({
+    url: '/api/task-service/task/create',
+    method: 'POST',
+    data
+  })
+}
+//工单管理——获取工单详情
+export const  getWorkOrderDetails= (taskId) => {
+  return request({
+    url:'/api/task-service/task/taskInfo/'+taskId
+  })
+}
+//工单管理——取消工单
+export const  cancelWorkOrder= (taskId) => {
+  return request({
+    url: '/api/task-service/task/cancel/' + taskId,
+    method: 'POST',
+    data: {
+      taskId
+    }
+  })
+}
+//用户服务（人员管理）——根据售货机获取运营人员列表
+export const  getListOperatorsBasedOnVendingMachines= (innerCode) => {
+  return request({
+    url: '/api/user-service/user/operatorList/'+innerCode
+  })
+}
+
+
 

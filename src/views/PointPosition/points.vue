@@ -262,7 +262,6 @@ import {
   deletePoint
 } from "@/api/pointManagement";
 import Dialog from "@/components/Dialogue";
-import { TransitionGroupStub } from "@vue/test-utils";
 export default {
   name: "pointManagement",
   components: {
