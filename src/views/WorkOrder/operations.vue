@@ -11,10 +11,14 @@
     </div>
     <div>
       <!-- 添加按钮 -->
-      <lsButton icon="el-icon-circle-plus-outline" color="addBtn" title="新建" />
+      <lsButton icon="el-icon-circle-plus-outline" color="addBtn" title="新建" @click="visible=true" />
       <!-- <lsButton title="工单配置" color="config" /> -->
       <el-table :data="WorkOrderList" style="width: 100%" :lazy="true" empty-text="暂无数据" type="index">
-        <tableColumn title="操作" label="查看详情">查看详情</tableColumn>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button type="text" @click="ViewDetails(scope)">查看详情</el-button>
+          </template>
+        </el-table-column>
         <tableColumn title="序号" type="index" :pag=" Pag.pageIndex" />
         <tableColumn title="工单编号" label="taskCode" />
         <tableColumn title="设备编号" label="innerCode" />
@@ -32,31 +36,45 @@
     </div>
     <!--  新增弹窗 -->
     <Dialogue title="添加工单" :visible.sync="visible">
-      <el-form ref="form" class="el-input" label-width="80px" label-position="right">
-        <!-- 设备编号 -->
-        <search ref="search" title="设备编号" />
-        <!-- 工单类型 -->
-        <DropDown ref="DropDown" :work="WorkOrderStatus" title="工单类型" />
-        <el-form-item label="补货数量">
-          <span class="BackOrder"> <i class="el-icon-document" /> <span>补货清单</span></span>
-        </el-form-item>
-        <!-- 运营人员 -->
-        <DropDown ref="DropDown" :work="WorkOrderStatus" title="运营人员" />
-        <!-- 留言框 -->
-        <!-- <el-form-item> -->
-        <MessageBox />
-        <!-- </el-form-item> -->
-        <div class="addWorkBtn">
-          <lsButton title="取消" color="config" @click="JobSearch" />
-          <lsButton title="确定" color="addBtn" @click="JobSearch" />
-        </div>
-      </el-form>
+      <OpsPopupWindow ref="addFrom" @create="create" />
     </Dialogue>
+    <!-- 查看详情弹窗 -->
+    <el-dialog
+      title="工单详情"
+      :visible.sync="dialogVisible"
+      width="40%"
+    >
+      <div v-if="show===1">待办</div>
+      <div v-if="show===4">完成</div>
+      <div v-if="show===3">
+        <div>
+          <div class="img">
+            <div class="img1">
+              <img src="@/assets/quxiao.png" alt="">
+              <span>取消</span>
+            </div>
+            <img src="http://likede2-admin.itheima.net/img/pic_3.e8208e34.png" alt="">
+          </div>
+          <el-row :gutter="20">
+            <el-col :span="8" :offset="2"><div class="grid-content bg-purple">设备编号：{{ data.innerCode }}</div></el-col>
+            <el-col :span="8" :offset="2"><div class="grid-content bg-purple">创建日期：{{ data.createTime }}</div></el-col>
+            <el-col :span="8" :offset="2"><div class="grid-content bg-purple">取消日期：{{ data.updateTime }}</div></el-col>
+            <el-col :span="8" :offset="2"><div class="grid-content bg-purple">运维人员：{{ data.userName }}</div></el-col>
+            <el-col :span="8" :offset="2"><div class="grid-content bg-purple">工单类型：{{ data.taskType.typeName }}</div></el-col>
+            <el-col :span="8" :offset="2"><div class="grid-content bg-purple">工单方式：{{ data.createType }}</div></el-col>
+            <el-col :span="24" :offset="2"><div class="grid-content bg-purple">取消原因：{{ data.desc }}</div></el-col>
+          </el-row>
+          <div class="addWorkBtn">
+            <lsButton title="重新创建" color="config" @click="Recreate" />
+          </div>
+        </div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import MessageBox from '@/components/MessageBox'
+import OpsPopupWindow from './components/OpsPopupWindow.vue'
 import search from '@/components/search'
 import DropDown from '@/components/DropDown'
 import lsButton from '@/components/ls-button'
@@ -71,16 +89,19 @@ export default {
     lsButton,
     tableColumn,
     Dialogue,
-    MessageBox
+    OpsPopupWindow
   },
   data() {
     return {
       WorkOrderStatus: [], // 工单状态数据
       WorkOrderList: [], // 工单列表数据 // 工单列表数据
+      data: {}, // 详情数据
       Pag: '', // 分页数据
       pageIndex: 1,
-      disable: true,
+      disable: false,
+      show: 1,
       disable1: false,
+      dialogVisible: false,
       status: '',
       taskCode: '',
       moment,
@@ -88,7 +109,7 @@ export default {
         status: '',
         taskCode: ''
       },
-      visible: true // 新建弹出框
+      visible: false // 新建弹出框
     }
   },
   computed: {},
@@ -148,6 +169,20 @@ export default {
         ele.updateTime = this.moment(ele.updateTime).utcOffset(8).format('YYYY.MM.DD HH:mm:ss')
       })
       return data
+    },
+    // 关闭新增弹框
+    create() {
+      this.visible = false
+    },
+    // 查看详情弹框
+    ViewDetails(val) {
+      console.log(val)
+      this.show = val.row.taskStatusTypeEntity.statusId
+      this.data = val.row
+      this.dialogVisible = true
+    },
+    Recreate() {
+      console.log(this.$refs.addFrom.data)
     }
   }
 }
@@ -206,5 +241,25 @@ export default {
  display: flex;
  justify-content: center;
  align-items: center;
+}
+.img{
+  display: flex;
+  height: 54px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  background-color: #e5e5e5;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+.img1{
+  display: flex;
+  align-items: center;
+  img{
+    margin-right: 20px;
+  }
+}
+.el-col-8{
+  margin-bottom: 15px;
 }
 </style>

@@ -40,7 +40,7 @@ service.interceptors.response.use(
         return res.data
       }
       Message.error(msg)
-      return Promise.reject(new Error(msg))
+      return Promise.reject(new Error(message))
     }
     return res
   },
@@ -55,6 +55,7 @@ service.interceptors.response.use(
       return Promise.reject(new Error(msg))
     } else if (error?.config?.url.startsWith('/api/vm-service/policy')) {
       Message.error(error?.response?.data)
+      return Promise.reject(new Error(massage))
     } else {
       Message.error(error.massage)
     }

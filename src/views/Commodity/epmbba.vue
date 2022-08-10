@@ -173,7 +173,6 @@ export default {
     },
     // 修改后提交
     async Modify() {
-      console.log(222)
       await ModifyItem(this.ModifyCommodity.skuId, this.$refs.NewProduct.fromData)
       this.$message.success('修改成功')
       this.Judge = true

@@ -10,12 +10,10 @@
         <div class="csose3">负责区域：阿萨德</div>
       </div>
 
-      
-
       <!-- 列表 -->
       <el-table style="width: 100%" :lazy="true" type="index">
         <Tablecolumn title="人员名称" />
-        <Tablecolumn title="" />
+        <Tablecolumn title="" label="formCes.name"> </Tablecolumn>
         <Tablecolumn title="人员名称" />
         <Tablecolumn title="人员名称" />
         <Tablecolumn title="人员名称" />
@@ -25,31 +23,43 @@
 </template>
 
 <script>
-import Tablecolumn from '@/components/tablecolumn' // 列表
+import Tablecolumn from "@/components/tablecolumn"; // 列表
+import { getUserIdApi } from "@/api/essential";
 export default {
-
   components: {
-    Tablecolumn
+    Tablecolumn,
   },
 
   props: {
     visible: {
       type: Boolean,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
-    return {}
+    return {
+      formData: {},
+      formCes: {
+        name: '本周'
+      }
+    };
   },
 
-  created() {},
+  created() {
+    // this.getUserIdApi()
+  },
 
   methods: {
     onClose() {
-      this.$emit('update:visible', false)
-    }
-  }
-}
+      this.$emit("update:visible", false);
+    },
+
+    // async getUserIdApi () {
+    //   const res = await getUserIdApi()
+    //   console.log(res);
+    // }
+  },
+};
 </script>
 
 <style scoped lang="scss">

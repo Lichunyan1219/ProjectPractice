@@ -12,15 +12,16 @@
         <Search
           ref="search"
           title="人员搜索"
-          :model.sync="searchFrom.taskCode"
+          :model.sync="searchFrom.userName"
         />
         <el-form-item label="角色">
           <el-select
-            v-model="formData.roleName"
+            v-model="searchFrom.roleName"
             filterable
             placeholder="请选择"
             :clearable="true"
             style="width: 100%"
+            :model.sync="searchFrom.userName"
           >
             <el-option
               v-for="(item, index) in WorkOrderStatus"
@@ -30,7 +31,6 @@
             />
           </el-select>
         </el-form-item>
-
 
         <LsButton title="查询" icon="el-icon-search" @click="JobSearch" />
       </el-form>
@@ -43,11 +43,14 @@
       empty-text="暂无数据"
       type="index"
     >
-      <Tablecolumn title="操作">
-        <el-button type="text" class="el-button1" @click="redact"
-          >查看详情</el-button
-        >
-      </Tablecolumn>
+      <el-table-column prop="date" label="操作">
+        <template slot-scope="scope">
+          <el-button type="text" class="el-button1" @click="redact(scope.row)"
+            >查看详情
+          </el-button>
+        </template>
+      </el-table-column>
+
       <Tablecolumn title="序号" type="index" :pag="page.pageIndex" />
       <Tablecolumn title="人员名称" label="userName" />
       <Tablecolumn title="角色" label="roleName" />
@@ -60,7 +63,7 @@
     <!-- 页码 -->
     <div class="dataBtn">
       <div class="Data">
-        共{{ page.totalCount }}记录 第{{ page.pageIndex }}/{{
+        共{{ page.totalCount }}记录 第{{ searchFrom.pageIndex }}/{{
           page.totalPage
         }}页
       </div>
@@ -103,15 +106,16 @@ export default {
       statusId: 0,
       statusName: 0,
       WorkOrderStatus: [], //角色
+      listste: [],
       page: {},
-      pageIndex: 1,
       disable: true,
       disable1: false,
       dialogVisible: false,
       searchFrom: {
         // 搜索表单数据
-        status: "",
-        taskCode: "",
+        pageIndex: 1,
+        userName: "",
+        roleName: "",
       },
       formData: {
         userName: "", //人员名称
@@ -133,12 +137,10 @@ export default {
   methods: {
     // 数据列表
     async getUserSearchUserWork() {
-      const { data } = await getUserSearchUserWork({
-        pageIndex: this.pageIndex,
-        ...this.searchFrom,
-      });
+      const { data } = await getUserSearchUserWork(this.searchFrom);
+      this.listste = data.currentPageRecords;
+      console.log(this.listste);
       this.page = data;
-      // console.log(data)
     },
 
     // 角色列表
@@ -150,8 +152,8 @@ export default {
 
     // 下一页
     NextPage() {
-      if (this.pageIndex < this.page.totalPage) {
-        this.pageIndex++;
+      if (this.searchFrom.pageIndex < this.page.totalPage) {
+        this.searchFrom.pageIndex++;
         this.disable = false;
         return this.getUserSearchUserWork();
       }
@@ -159,8 +161,8 @@ export default {
     },
     // 上一页
     PreviousPage() {
-      if (this.pageIndex > 1) {
-        this.pageIndex--;
+      if (this.searchFrom.pageIndex > 1) {
+        this.searchFrom.pageIndex--;
         return this.getUserSearchUserWork();
       }
       this.disable = true;
@@ -168,8 +170,9 @@ export default {
 
     // 搜索
     async JobSearch() {
-      this.getUserSearchUserWork();
-      console.log(this.$refs.search);
+      this.searchFrom.pageIndex = 1;
+      await this.getUserSearchUserWork();
+      // console.log(this.$refs.search);
     },
     redact() {
       this.dialogVisible = true;

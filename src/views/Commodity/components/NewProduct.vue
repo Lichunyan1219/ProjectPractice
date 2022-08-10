@@ -110,7 +110,6 @@ export default {
       try {
         await this.$refs.fromData.validate()
         if (this.judge) {
-          console.log(11)
           try {
             const res = await setCommodity(this.fromData)
             if (res) {

@@ -13,7 +13,7 @@
           ref="search"
           title="人员搜索"
           class="title-searchs"
-          :model.sync="searchFrom.taskCode"
+          :model.sync="searchFrom.userName"
         />
         <LsButton title="查询" icon="el-icon-search" @click="JobSearch" />
       </el-form>
@@ -26,27 +26,27 @@
         icon="el-icon-circle-plus-outline"
         color="addBtn"
         title="新建"
-        @click="redact"
+        @click="redactsrc"
       />
       <!-- 新建 -->
 
       <!-- 列表 -->
       <el-table
-        :data="page.currentPageRecords"
+        :data="listste"
         style="width: 100%"
         :lazy="true"
         empty-text="暂无数据"
         type="index"
       >
-        <Tablecolumn title="操作">
-          <el-button type="text" @click="redact">编辑</el-button>
-          <el-button type="text" class="el-button1" @click="onRemove">删除</el-button>
-        </Tablecolumn>
-        <Tablecolumn
-          title="序号"
-          type="index"
-          :pag="page.pageIndex"
-        />
+        <el-table-column prop="date" label="操作">
+          <template slot-scope="scope">
+            <el-button type="text" @click="redact(scope.row)">编辑</el-button>
+            <el-button type="text" style='color:red;' @click="onRemove(scope.row)">删除</el-button>
+          </template>
+        </el-table-column>
+
+        </el-table-column>
+        <Tablecolumn title="序号" type="index" :pag="page.pageIndex" />
         <Tablecolumn title="人员名称" label="userName" />
         <Tablecolumn title="归属区域" label="regionName" />
         <Tablecolumn title="角色" label="role.roleName" />
@@ -56,7 +56,7 @@
       <!-- 页码 -->
       <div class="dataBtn">
         <div class="Data">
-          共{{ page.totalCount }}记录 第{{ page.pageIndex }}/{{
+          共{{ page.totalCount }}记录 第{{ searchFrom.pageIndex }}/{{
             page.totalPage
           }}页
         </div>
@@ -74,7 +74,7 @@
           @click="NextPage"
         />
       </div>
-      <Information :visible.sync="dialogVisible" />
+      <Information :visible.sync="dialogVisible" ref="formData"/>
     </div>
   </div>
 </template>
@@ -90,22 +90,20 @@ export default {
     LsButton,
     Search,
     Tablecolumn,
-    Information
+    Information,
   },
   data() {
     return {
       page: {},
-      pageIndex: 1,
       listste: [],
-      WorkOrderList: [],
       disable: true,
       disable1: false,
       dialogVisible: false,
       searchFrom: {
         // 搜索表单数据
-        taskCode: ''
-      }
-        // 搜索表单数据
+        pageIndex: 1,
+        userName: "",
+      },
     };
   },
   components: {
@@ -118,69 +116,77 @@ export default {
   watch: {},
   // 生命周期 - 创建完成（可以访问当前this实例）
   created() {
-    this.getUserId()
+    this.getUserId();
   },
   // 生命周期 - 挂载完成（可以访问DOM元素）
   mounted() {},
   methods: {
     // 获取列表
     async getUserId() {
-      const { data } = await getSearchApi({
-        pageIndex: this.pageIndex,
-        ...this.searchFrom
-      });
+      const { data } = await getSearchApi(this.searchFrom);
+      this.listste = data.currentPageRecords;
+      //   console.log(data);
+      // console.log(this.searchFrom);
       this.page = data;
     },
     // 下一页
     NextPage() {
-      if (this.pageIndex < this.page.totalPage) {
-        this.pageIndex++
-        this.disable = false
-        return this.getUserId()
+      if (this.searchFrom.pageIndex < this.page.totalPage) {
+        this.searchFrom.pageIndex++;
+        this.disable = false;
+        return this.getUserId();
       }
-      this.disable1 = true
+      this.disable1 = true;
     },
     // 上一页
     PreviousPage() {
-      if (this.pageIndex > 1) {
-        this.pageIndex--
-        return this.getUserId()
+      if (this.searchFrom.pageIndex > 1) {
+        this.searchFrom.pageIndex--;
+        return this.getUserId();
       }
-      this.disable = true
+      this.disable = true;
     },
 
     // 搜索
     async JobSearch() {
-     const res = await getSearchApi({
-        userName:this.searchFrom.taskCode
-      })
-     this.page.currentPageRecords = res
-      this.getUserId()
-      console.log(res);
+      this.searchFrom.pageIndex = 1;
+      await this.getUserId();
     },
-    redact() {
+    // 编辑
+    redact(val) {
+      this.$refs.formData.formData
+      // console.log(res);
+      this.dialogVisible = true;
+      // console.log(val)
+      this.$refs.formData.formData.regionName=val.regionName
+      this.$refs.formData.formData.mobile=val.mobile
+      this.$refs.formData.formData.image=val.image
+      this.$refs.formData.formData.status=val.status
+      this.$refs.formData.formData.roleId=val.roleId
+      this.$refs.formData.formData.userName=val.userName
+      this.$refs.formData.formData.regionId = val.regionId
+    },
+
+// 新增
+    redactsrc() {
       this.dialogVisible = true;
     },
 
     // 删除
-    async onRemove () {
-      // try {
-      //   await this.$confirm('此操作将永久删除该部门, 是否继续?', '提示', {
-      //     confirmButtonText: '删除',
-      //     cancelButtonText: '取消',
-      //     type: 'warning',
-      //   })
-      //   await deleteUserIDApi(this.listste.id)
-      //   // this.getUserId()
-      //   this.$message.success('删除成功')
-      //   this.$emit('remove')
-      //   console.log(this.listste.id);
-      // } catch (error) {
-      //   console.log(error);
-      // }
-      await deleteUserIDApi(this.listste.id)
-      console.log(this.listste.id);
-    }
+    async onRemove(val) {
+      try {
+        await this.$confirm('此操作将永久删除该人员, 是否继续?', '提示', {
+          confirmButtonText: '删除',
+          cancelButtonText: '取消',
+          type: 'warning',
+        })
+        await deleteUserIDApi(val.id)
+       this.$message.success('删除成功')
+        this.getUserId();
+      } catch (error) {
+        console.log(error);
+      }
+    },
   },
 };
 </script>
