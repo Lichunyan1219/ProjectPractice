@@ -40,7 +40,9 @@ export default {
     }
   },
   data() {
-    return {}
+    return {
+      formData: {}
+    }
   },
 
   created() {
