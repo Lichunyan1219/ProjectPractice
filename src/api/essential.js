@@ -11,27 +11,27 @@ export const getUserIdApi = (id) => {
 // 获取用户工作量(工单统计)
 // /api/task-service/task/userWork
 export const getUserWorkApi = () => {
-    return request({
-        url: '/api/task-service/task/userWork'
-    })
+  return request({
+    url: '/api/task-service/task/userWork'
+  })
 }
 
 // 人员搜索(列表页)
 // /api/user-service/user/search
 export const getSearchApi = (params) => {
-    return request({
-        url: '/api/user-service/user/search',
-        params
-    })
+  return request({
+    url: '/api/user-service/user/search',
+    params
+  })
 }
 
 // 人员工作量列表
 // /api/user-service/user/searchUserWork
 export const getUserSearchUserWork = (params) => {
-    return request({
-        url: '/api/user-service/user/searchUserWork',
-        params
-    })
+  return request({
+    url: '/api/user-service/user/searchUserWork',
+    params
+  })
 }
 
 // 角色列表
